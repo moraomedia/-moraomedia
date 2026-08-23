@@ -2870,28 +2870,33 @@ document.addEventListener('DOMContentLoaded', function(){
 }
 </style>
 
-<style id="morao-v40-mobile-photo-scrolltrap">
-@media(max-width:800px){
+<style id="morao-v41-photo-mobile-final">
+@media (max-width:800px){
+  /*
+    The photo section itself provides the scroll distance.
+    The inner stage is sticky, so the viewport stays visually locked
+    while the scroll position drives updatePhotography().
+  */
   .photography-section{
     padding:0!important;
     margin:0!important;
   }
 
   .photography-section .photo-scroll{
-    height:calc(100svh - var(--header-height,60px))!important;
-    min-height:calc(100svh - var(--header-height,60px))!important;
-    position:relative!important;
+    height:720vh!important;
+    min-height:720vh!important;
     margin:0!important;
+    position:relative!important;
   }
 
   .photography-section .photo-pin{
-    position:relative!important;
-    top:auto!important;
+    position:sticky!important;
+    top:var(--header-height,60px)!important;
     height:calc(100svh - var(--header-height,60px))!important;
-    width:100vw!important;
     min-height:0!important;
-    overflow:hidden!important;
+    width:100vw!important;
     display:block!important;
+    overflow:hidden!important;
   }
 
   .photography-section .photo-stack{
@@ -2899,6 +2904,7 @@ document.addEventListener('DOMContentLoaded', function(){
     inset:0!important;
     width:100vw!important;
     height:100%!important;
+    margin:0!important;
     overflow:visible!important;
   }
 
@@ -2906,146 +2912,27 @@ document.addEventListener('DOMContentLoaded', function(){
     position:absolute!important;
     top:50%!important;
     left:50%!important;
-    width:68vw!important;
+    width:56vw!important;
     max-width:none!important;
     height:auto!important;
-    aspect-ratio:3/4!important;
+    aspect-ratio:3 / 4!important;
     margin:0!important;
     border:0!important;
     overflow:hidden!important;
+    transform-origin:center center!important;
   }
+}
 
-  body.morao-photo-trapping{
-    overflow:hidden!important;
-    overscroll-behavior:none!important;
+@media (max-width:500px){
+  .photography-section .photo-scroll{
+    height:760vh!important;
+    min-height:760vh!important;
   }
-
-  body.morao-photo-trapping .photography-section{
-    position:relative!important;
+  .photography-section .photo-card{
+    width:54vw!important;
   }
 }
 </style>
-
-<script>
-(function(){
-  const section=document.querySelector('.photography-section');
-  const scroller=section && section.querySelector('.photo-scroll');
-  if(!section || !scroller) return;
-
-  let touchY=null;
-  let locked=false;
-
-  function getHeaderHeight(){
-    return parseFloat(
-      getComputedStyle(document.documentElement)
-        .getPropertyValue('--header-height')
-    ) || 60;
-  }
-
-  function inPhotoStage(){
-    if(window.innerWidth>800) return false;
-    const r=section.getBoundingClientRect();
-    const topLimit=getHeaderHeight();
-    return r.top <= topLimit + 2 && r.bottom >= window.innerHeight - 2;
-  }
-
-  function setLocked(value){
-    if(value===locked) return;
-    locked=value;
-    document.body.classList.toggle('morao-photo-trapping',locked);
-  }
-
-  function applyDelta(delta){
-    const amount=Math.max(-160,Math.min(160,delta));
-    photoManualProgress=clamp(photoManualProgress + amount / 1200);
-
-    updatePhotography();
-
-    if(photoManualProgress<=0 && amount<0){
-      setLocked(false);
-    }else if(photoManualProgress>=1 && amount>0){
-      photoManualProgress=1;
-      updatePhotography();
-      setLocked(false);
-    }
-  }
-
-  function onWheel(e){
-    if(window.innerWidth>800) return;
-
-    if(inPhotoStage()){
-      const goingDown=e.deltaY>0;
-      const atStart=photoManualProgress<=0.0001 && !goingDown;
-      const atEnd=photoManualProgress>=0.9999 && goingDown;
-
-      if(!atStart && !atEnd){
-        setLocked(true);
-        e.preventDefault();
-        applyDelta(e.deltaY);
-        return;
-      }
-
-      if(goingDown && photoManualProgress<1){
-        setLocked(true);
-        e.preventDefault();
-        applyDelta(e.deltaY);
-      }
-    }
-  }
-
-  function onTouchStart(e){
-    if(window.innerWidth>800) return;
-    if(inPhotoStage() && e.touches.length){
-      touchY=e.touches[0].clientY;
-    }
-  }
-
-  function onTouchMove(e){
-    if(window.innerWidth>800 || touchY===null) return;
-    if(!inPhotoStage()){
-      touchY=e.touches[0].clientY;
-      return;
-    }
-
-    const y=e.touches[0].clientY;
-    const delta=touchY-y;
-    const goingDown=delta>0;
-    const atStart=photoManualProgress<=0.0001 && !goingDown;
-    const atEnd=photoManualProgress>=0.9999 && goingDown;
-
-    if(!atStart && !atEnd){
-      setLocked(true);
-      e.preventDefault();
-      applyDelta(delta);
-    }else if(goingDown && photoManualProgress<1){
-      setLocked(true);
-      e.preventDefault();
-      applyDelta(delta);
-    }
-
-    touchY=y;
-  }
-
-  function onTouchEnd(){
-    touchY=null;
-  }
-
-  window.addEventListener('wheel',onWheel,{passive:false});
-  window.addEventListener('touchstart',onTouchStart,{passive:true});
-  window.addEventListener('touchmove',onTouchMove,{passive:false});
-  window.addEventListener('touchend',onTouchEnd,{passive:true});
-
-  window.addEventListener('resize',()=>{
-    if(window.innerWidth>800){
-      setLocked(false);
-      photoManualProgress=0;
-      updatePhotography();
-    }
-  });
-
-  updatePhotography();
-})();
-</script>
 </head>
 
 <body>
@@ -3219,8 +3106,6 @@ document.addEventListener('DOMContentLoaded', function(){
     return clamp(-r.top / Math.max(el.offsetHeight - innerHeight, 1));
   }
 
-  let photoManualProgress = 0;
-
   function updatePhotography() {
     if (!photoScroll || !photoStack) return;
 
@@ -3228,27 +3113,43 @@ document.addEventListener('DOMContentLoaded', function(){
     const mobile = innerWidth <= 800;
 
     if (mobile) {
+      /*
+        MOBILE PHOTO STORY
+        - The viewport is held by .photo-pin (sticky).
+        - Page scroll controls only this sequence.
+        - Photo 1 is already visible and centered.
+        - Photos 2→8 enter from the right and finish at the same center point.
+      */
+      const p = sectionProgress(photoScroll);
+
       const cardW = innerWidth <= 500
-        ? innerWidth * 0.66
-        : innerWidth * 0.68;
+        ? innerWidth * 0.54
+        : innerWidth * 0.56;
       const cardH = cardW / 0.75;
+
       const entryX = innerWidth * 0.92;
-      const verticalOffset = 24;
+      const step = cardW * 0.035;
+      const finalCenterOffset = 0;
 
       cards.forEach((card, i) => {
-        const start = i === 0 ? 0 : 0.10 + (i - 1) * 0.115;
-        const duration = i === 0 ? 0 : 0.15;
-        const q = i === 0
-          ? 1
-          : ease(clamp((photoManualProgress - start) / duration));
+        const start = i === 0 ? 0 : 0.06 + (i - 1) * 0.125;
+        const duration = i === 0 ? 0 : 0.17;
+        const q = i === 0 ? 1 : ease(clamp((p - start) / duration));
 
-        const x = i === 0 ? 0 : entryX * (1 - q);
+        /*
+          All photos end in the same center position.
+          The tiny step only creates the final editorial overlap order.
+        */
+        const finalX = (i - 3.5) * step;
+        const x = i === 0
+          ? finalX
+          : entryX + (finalX - entryX) * q;
 
         card.style.width = cardW + "px";
         card.style.height = cardH + "px";
         card.style.opacity = q;
         card.style.transform =
-          `translate3d(calc(-50% + ${x}px), calc(-50% + ${verticalOffset}px), 0)`;
+          `translate3d(calc(-50% + ${x}px), calc(-50% + 26px), 0)`;
         card.style.zIndex = i + 1;
       });
     } else {
