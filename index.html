@@ -2870,104 +2870,37 @@ document.addEventListener('DOMContentLoaded', function(){
 }
 </style>
 
-<style id="morao-v35-mobile-photo-final">
+<style id="morao-v35-mobile-photo-clean">
 @media(max-width:800px){
   .photography-section .photo-scroll{
-    height:700vh!important;
-    min-height:700vh!important;
+    height:650vh!important;
+    min-height:650vh!important;
   }
   .photography-section .photo-pin{
+    top:var(--header-height,60px)!important;
     height:calc(100svh - var(--header-height,60px))!important;
     min-height:0!important;
-    top:var(--header-height,60px)!important;
     overflow:visible!important;
   }
   .photography-section .photo-stack{
-    position:absolute!important;
     top:22px!important;
-    left:0!important;
-    width:100vw!important;
     height:calc(100% - 22px)!important;
-    min-height:0!important;
-    margin:0!important;
+    width:100vw!important;
     overflow:visible!important;
   }
   .photography-section .photo-card{
-    width:62vw!important;
+    aspect-ratio:3/4!important;
     max-width:none!important;
-    height:auto!important;
-    aspect-ratio:3 / 4!important;
-    top:50%!important;
-    left:50%!important;
-    margin:0!important;
-  }
-  .photography-section .photo-card img{
-    width:100%!important;
-    height:100%!important;
-    object-fit:cover!important;
+    overflow:hidden!important;
   }
 }
 @media(max-width:500px){
   .photography-section .photo-scroll{
-    height:760vh!important;
-    min-height:760vh!important;
-  }
-  .photography-section .photo-card{
-    width:58vw!important;
+    height:700vh!important;
+    min-height:700vh!important;
   }
 }
 </style>
-
-<script>
-(function(){
-  const section=document.querySelector('.photography-section');
-  const scroll=section && section.querySelector('.photo-scroll');
-  const stack=section && section.querySelector('.photo-stack');
-  const cards=section ? [...section.querySelectorAll('.photo-card')] : [];
-  if(!section || !scroll || !stack || !cards.length) return;
-
-  const clamp=(v,a=0,b=1)=>Math.min(Math.max(v,a),b);
-  const ease=t=>t*t*(3-2*t);
-
-  function update(){
-    if(window.innerWidth>800) return;
-
-    const small=window.innerWidth<=500;
-    const p=clamp(
-      -scroll.getBoundingClientRect().top /
-      Math.max(scroll.offsetHeight-window.innerHeight,1)
-    );
-
-    const cardW=window.innerWidth*(small ? .58 : .62);
-    const cardH=cardW/.75;
-    const step=cardW*(small ? .125 : .115);
-    const startX=window.innerWidth*.42;
-    const yOffset=small ? 18 : 24;
-
-    cards.forEach((card,i)=>{
-      const start=i===0 ? 0 : i*.082;
-      const duration=i===0 ? 0 : .20;
-      const q=i===0 ? 1 : ease(clamp((p-start)/duration));
-      const finalX=(i-3.5)*step;
-      const x=i===0 ? finalX : startX+(finalX-startX)*q;
-
-      card.style.setProperty('width',cardW+'px','important');
-      card.style.setProperty('height',cardH+'px','important');
-      card.style.setProperty('opacity',q,'important');
-      card.style.setProperty(
-        'transform',
-        `translate3d(calc(-50% + ${x}px),calc(-50% + ${yOffset}px),0)`,
-        'important'
-      );
-      card.style.setProperty('z-index',String(i+1),'important');
-    });
-  }
-
-  update();
-  window.addEventListener('scroll',update,{passive:true});
-  window.addEventListener('resize',update);
-})();
-</script>
 </head>
 
 <body>
@@ -3152,26 +3085,30 @@ document.addEventListener('DOMContentLoaded', function(){
       Final footprint: eight 3:4 vertical photos fill almost the full
       viewport width while remaining centered.
     */
-    const cardH = Math.min(
-      innerHeight * (mobile ? 1.34 : 1.40),
-      innerWidth * (mobile ? 2.05 : 2.35)
-    );
-    const cardW = cardH * 0.75;
+    const cardW = mobile
+      ? innerWidth * 0.58
+      : Math.min(
+          innerHeight * 1.40,
+          innerWidth * 2.35
+        );
+    const cardH = cardW / 0.75;
 
     cards.forEach((card, i) => {
       const start = i === 0 ? 0 : i * 0.082;
       const duration = i === 0 ? 0 : 0.20;
       const q = i === 0 ? 1 : ease(clamp((p - start) / duration));
 
-      const startX = innerWidth * 1.30;
-      const step = cardW * (mobile ? 0.145 : 0.135);
+      const startX = mobile ? innerWidth * 0.95 : innerWidth * 1.30;
+      const step = cardW * (mobile ? 0.14 : 0.135);
       const finalX = (i - 3.5) * step;
-      const x = startX + (finalX - startX) * q;
+      const x = mobile && i === 0
+        ? 0
+        : startX + (finalX - startX) * q;
 
       card.style.width = cardW + "px";
       card.style.opacity = q;
-      const compositionScale = mobile ? 1.14 : 1.16;
-      const verticalOffset = mobile ? 58 : 68;
+      const compositionScale = mobile ? 1.0 : 1.16;
+      const verticalOffset = mobile ? 28 : 68;
       card.style.transform =
         `translate3d(calc(-50% + ${x}px), calc(-50% + ${verticalOffset}px), 0) scale(${compositionScale})`;
       card.style.zIndex = i + 1;
