@@ -263,7 +263,7 @@ section{padding:115px 0;position:relative}
   position:relative;
   overflow:hidden;
   background:#3a1456;
-  border:1px solid rgba(255,255,255,.12);
+  border:0;
   box-shadow:0 18px 55px rgba(0,0,0,.28);
 }
 .photo-card:nth-child(2){background:#752b8d}
@@ -419,7 +419,7 @@ body{font-family:Montserrat,Arial,sans-serif;font-weight:400}
  flex:0 0 clamp(210px,23vw,330px);
  aspect-ratio:3/4;
  position:relative;overflow:hidden;
- border:1px solid rgba(255,255,255,.12);
+ border:0;
  box-shadow:0 22px 75px rgba(0,0,0,.34);
 }
 .photo-card:nth-child(1){background:#30134b}.photo-card:nth-child(2){background:#752b8d}
@@ -432,7 +432,7 @@ body{font-family:Montserrat,Arial,sans-serif;font-weight:400}
 .video-stack{width:min(1000px,92vw);display:flex;flex-direction:column;gap:18px;align-items:center}
 .video-card{
  width:min(760px,84vw);aspect-ratio:16/7;position:relative;overflow:hidden;
- border:1px solid rgba(255,255,255,.12);opacity:0;will-change:transform,opacity;
+ border:0;opacity:0;will-change:transform,opacity;
 }
 .video-card:nth-child(1){background:linear-gradient(110deg,#251038,#5a1978)}
 .video-card:nth-child(2){background:linear-gradient(110deg,#42154e,#241032)}
@@ -447,7 +447,7 @@ body{font-family:Montserrat,Arial,sans-serif;font-weight:400}
 .social-stack{display:flex;align-items:center;justify-content:center;gap:28px;width:min(1050px,92vw)}
 .social-card{
  width:min(250px,27vw);aspect-ratio:9/16;position:relative;overflow:hidden;
- border:1px solid rgba(255,255,255,.12);opacity:0;will-change:transform,opacity;
+ border:0;opacity:0;will-change:transform,opacity;
 }
 .social-card:nth-child(1){background:linear-gradient(145deg,#29103c,#71307d)}
 .social-card:nth-child(2){background:linear-gradient(145deg,#57206f,#25102f)}
@@ -839,7 +839,7 @@ body{line-height:1.25!important}
   margin:0!important;
   aspect-ratio:3/4!important;
   height:auto!important;
-  border:1px solid rgba(255,255,255,.13)!important;
+  border:0!important;
   transform-origin:center center!important;
   will-change:transform,opacity!important;
 }
@@ -866,7 +866,7 @@ body{line-height:1.25!important}
   position:absolute!important;
   width:min(92vw,1400px)!important;
   aspect-ratio:16/9!important;
-  border:1px solid rgba(255,255,255,.13)!important;
+  border:0!important;
   opacity:0!important;
   transform-origin:center!important;
   will-change:transform,opacity!important;
@@ -887,7 +887,7 @@ body{line-height:1.25!important}
   width:calc((100% - 28px)/3)!important;
   flex:0 0 calc((100% - 28px)/3)!important;
   aspect-ratio:16/9!important;
-  border:1px solid rgba(255,255,255,.13)!important;
+  border:0!important;
   opacity:0!important;
   will-change:transform,opacity!important;
 }
@@ -942,7 +942,7 @@ body{line-height:1.25!important}
   margin:0!important;
   transform-origin:center center!important;
   will-change:transform,opacity!important;
-  border:1px solid rgba(255,255,255,.14)!important;
+  border:0!important;
 }
 @media(max-width:800px){
   .photography-section{
@@ -1058,7 +1058,7 @@ body{line-height:1.25!important}
   margin:0!important;
   transform-origin:center center!important;
   will-change:transform,opacity!important;
-  border:1px solid rgba(255,255,255,.14)!important;
+  border:0!important;
 }
 @media(max-width:800px){
   .photography-section .portfolio-wrap{
@@ -2231,7 +2231,7 @@ document.addEventListener('DOMContentLoaded', function(){
   aspect-ratio:9/16!important;
   margin:0 auto!important;
   background:rgba(255,255,255,.035)!important;
-  border:1px solid rgba(255,255,255,.14)!important;
+  border:0!important;
   position:relative!important;
   overflow:hidden!important;
 }
@@ -2813,6 +2813,15 @@ document.addEventListener('DOMContentLoaded', function(){
   z-index:2!important;
 }
 </style>
+
+<style id="morao-v31-photo-first-visible">
+.photography-section .photo-card.photo-1{
+  opacity:1!important;
+}
+.photography-section .photo-card{
+  border:0!important;
+}
+</style>
 </head>
 
 <body>
@@ -2862,14 +2871,14 @@ document.addEventListener('DOMContentLoaded', function(){
     <div class="photo-pin">
       <div class="photo-title-fixed">FOTO</div>
       <div class="photo-stack" id="photoStack">
-        <div class="photo-card photo-1"><img src="assets/foto-01.jpg" alt="Fotografía 1"><span>01</span></div>
-        <div class="photo-card photo-2"><img src="assets/foto-02.jpg" alt="Fotografía 2"><span>02</span></div>
-        <div class="photo-card photo-3"><img src="assets/foto-03.jpg" alt="Fotografía 3"><span>03</span></div>
-        <div class="photo-card photo-4"><img src="assets/foto-04.jpg" alt="Fotografía 4"><span>04</span></div>
-        <div class="photo-card photo-5"><img src="assets/foto-05.jpg" alt="Fotografía 5"><span>05</span></div>
-        <div class="photo-card photo-6"><img src="assets/foto-06.jpg" alt="Fotografía 6"><span>06</span></div>
-        <div class="photo-card photo-7"><img src="assets/foto-07.jpg" alt="Fotografía 7"><span>07</span></div>
-        <div class="photo-card photo-8"><img src="assets/foto-08.jpg" alt="Fotografía 8"><span>08</span></div>
+        <div class="photo-card photo-1"><img src="assets/foto-01.jpg" alt="Fotografía 1"><span>ESTÉREO PICNIC - DJO</span></div>
+        <div class="photo-card photo-2"><img src="assets/foto-02.jpg" alt="Fotografía 2"><span>FEID</span></div>
+        <div class="photo-card photo-3"><img src="assets/foto-03.jpg" alt="Fotografía 3"><span>LIMP BIZKIT</span></div>
+        <div class="photo-card photo-4"><img src="assets/foto-04.jpg" alt="Fotografía 4"><span>LUIS ALFONSO</span></div>
+        <div class="photo-card photo-5"><img src="assets/foto-05.jpg" alt="Fotografía 5"><span>J BALVIN</span></div>
+        <div class="photo-card photo-6"><img src="assets/foto-06.jpg" alt="Fotografía 6"><span>CORDILLERA - LOS CALIGARIS</span></div>
+        <div class="photo-card photo-7"><img src="assets/foto-07.jpg" alt="Fotografía 7"><span>WEDDING SHOOTING</span></div>
+        <div class="photo-card photo-8"><img src="assets/foto-08.jpg" alt="Fotografía 8"><span>RYAN CASTRO</span></div>
       </div>
     </div>
   </div>
@@ -2988,9 +2997,9 @@ document.addEventListener('DOMContentLoaded', function(){
     const cardW = cardH * 0.75;
 
     cards.forEach((card, i) => {
-      const start = i * 0.082;
-      const duration = 0.20;
-      const q = ease(clamp((p - start) / duration));
+      const start = i === 0 ? 0 : i * 0.082;
+      const duration = i === 0 ? 0 : 0.20;
+      const q = i === 0 ? 1 : ease(clamp((p - start) / duration));
 
       const startX = innerWidth * 1.30;
       const step = cardW * (mobile ? 0.145 : 0.135);
