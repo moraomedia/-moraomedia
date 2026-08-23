@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Morao Media — Producción Audiovisual</title>
+<meta name="description" content="Morao Media — Producción audiovisual, fotografía, video y contenido para música, eventos y marcas.">
+<meta name="theme-color" content="#08070b">
+<meta property="og:title" content="Morao Media — Producción Audiovisual">
+<meta property="og:description" content="Producción audiovisual para música, eventos y marcas.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#08070b;
+  --surface:#100d15;
+  --text:#f5f2f7;
+  --muted:#aaa3b0;
+  --purple:#8b3dff;
+  --magenta:#c34dff;
+  --border:rgba(255,255,255,.11);
+  --max:1280px;
+  --tracking-title:.30em;
+  --tracking-body:.15em;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  color:var(--text);
+  font-family:Helvetica,Arial,sans-serif;
+  overflow-x:hidden;
+  background:
+    radial-gradient(ellipse at 18% 12%,rgba(139,61,255,.22),transparent 30%),
+    radial-gradient(ellipse at 82% 40%,rgba(195,77,255,.13),transparent 28%),
+    linear-gradient(135deg,#08070b 0%,#110b17 48%,#07060a 100%);
+}
+body:before{
+  content:"";
+  position:fixed;
+  z-index:-2;
+  inset:-15%;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 20% 20%,rgba(126,42,255,.25),transparent 28%),
+    radial-gradient(ellipse at 75% 65%,rgba(195,77,255,.17),transparent 30%);
+  filter:blur(70px);
+}
+body:after{
+  content:"";
+  position:fixed;
+  z-index:-1;
+  inset:0;
+  pointer-events:none;
+  opacity:.16;
+  background:
+    repeating-linear-gradient(115deg,transparent 0 7px,rgba(255,255,255,.025) 8px 9px,transparent 10px 17px);
+  mix-blend-mode:screen;
+}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit}
+.wrap{width:min(var(--max),calc(100% - 48px));margin:auto}
+
+/* HEADER — unchanged structure */
+.nav{
+  position:fixed;
+  z-index:100;
+  inset:0 0 auto;
+  padding:18px 0;
+  background:linear-gradient(180deg,rgba(8,7,11,.94),transparent);
+  backdrop-filter:blur(10px);
+}
+.navin{display:flex;align-items:center;justify-content:space-between}
+.navlogo{
+  width:125px;height:48px;overflow:hidden;border-radius:5px;background:#09070d
+}
+.navlogo img{width:100%;height:100%;object-fit:cover;transform:scale(1.72)}
+.links{
+  display:flex;gap:30px;
+  font-family:Montserrat,sans-serif;
+  font-size:11px;font-weight:700;
+  letter-spacing:.14em;
+}
+.links a{color:#d8d2dc;transition:.25s}
+.links a:hover{color:#fff}
+
+/* GLOBAL TEXT MOTION */
+.reveal{
+  opacity:0;
+  transform:translateY(18px);
+  transition:opacity .7s ease,transform .7s cubic-bezier(.22,.61,.36,1);
+}
+.reveal.is-visible{opacity:1;transform:none}
+.reveal.is-hidden{
+  opacity:0;
+  transform:translateY(-12px);
+}
+
+/* HERO */
+.hero{
+  position:relative;
+  min-height:100svh;
+  display:grid;
+  place-items:center;
+  padding:130px 0 70px;
+  overflow:hidden;
+  text-align:center;
+}
+.hero-media{
+  position:absolute;
+  inset:-4%;
+  background:
+    radial-gradient(circle at 50% 38%,rgba(195,77,255,.62),transparent 28%),
+    radial-gradient(circle at 18% 75%,rgba(83,24,180,.55),transparent 32%),
+    linear-gradient(135deg,#171022,#4c176e 52%,#08070b);
+  transform:scale(1);
+  will-change:transform;
+}
+.hero-media:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(180deg,rgba(8,7,11,.18),rgba(8,7,11,.72)),
+    repeating-linear-gradient(120deg,transparent 0 9px,rgba(255,255,255,.035) 10px 11px,transparent 12px 20px);
+  mix-blend-mode:screen;
+  opacity:.55;
+}
+.hero-content{position:relative;z-index:2;max-width:900px;margin:auto}
+.eyebrow{font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;letter-spacing:.30em;color:#fff}
+.hero h1{
+  font-family:Montserrat,sans-serif;
+  font-size:clamp(54px,10vw,130px);
+  line-height:.88;
+  font-weight:900;
+  letter-spacing:var(--tracking-title);
+  margin:25px auto 24px;
+  text-transform:uppercase;
+}
+.hero-copy{
+  max-width:620px;
+  margin:auto;
+  color:#eee8f0;
+  font-size:clamp(14px,1.5vw,18px);
+  line-height:1.6;
+  letter-spacing:var(--tracking-body);
+}
+.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:32px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:48px;padding:13px 21px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.94);color:#09070b;
+  font-family:Montserrat,sans-serif;font-size:10px;font-weight:800;
+  letter-spacing:.16em;transition:.25s;
+}
+.btn:hover{transform:translateY(-2px);background:#fff}
+
+/* SECTIONS */
+section{padding:115px 0;position:relative}
+.sectionhead{text-align:center;margin-bottom:48px}
+.title{
+  font-family:Montserrat,sans-serif;
+  font-size:clamp(44px,7vw,92px);
+  font-weight:800;
+  line-height:.92;
+  letter-spacing:var(--tracking-title);
+  text-transform:uppercase;
+  margin:0;
+}
+.intro{
+  max-width:560px;
+  margin:28px auto 0;
+  color:var(--muted);
+  line-height:1.7;
+  font-size:13px;
+  letter-spacing:var(--tracking-body);
+}
+
+/* WORKED WITH */
+.clients-section{overflow:hidden}
+.clients{
+  display:flex;flex-wrap:wrap;justify-content:center;
+  gap:28px 48px;
+  margin-top:36px;
+  align-items:center;
+}
+.client-logo{
+  width:150px;height:72px;
+  display:grid;place-items:center;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.025);
+  color:#827b87;
+  font-family:Montserrat,sans-serif;
+  font-size:9px;font-weight:700;
+  letter-spacing:.12em;
+  text-align:center;
+  filter:grayscale(1);
+  transition:.35s;
+}
+.client-logo:hover{filter:none;color:#fff;border-color:rgba(195,77,255,.5);transform:translateY(-3px)}
+.client-logo span{max-width:120px}
+
+/* SERVICES */
+.services-wrap{text-align:center}
+.services{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+}
+.service{
+  min-height:245px;
+  padding:34px 25px;
+  background:rgba(8,7,11,.42);
+  backdrop-filter:blur(9px);
+  text-align:center;
+}
+.service h3{
+  font-family:Montserrat,sans-serif;
+  font-size:22px;
+  letter-spacing:var(--tracking-title);
+  text-transform:uppercase;
+  margin:0 0 18px;
+}
+.service p{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.9;
+  letter-spacing:var(--tracking-body);
+  margin:0;
+}
+
+/* PHOTO SCROLL CAROUSEL */
+.photo-scroll{
+  height:145vh;
+  margin-top:80px;
+  position:relative;
+}
+.photo-sticky{
+  position:sticky;
+  top:0;
+  height:100svh;
+  display:flex;
+  align-items:center;
+  overflow:hidden;
+}
+.photo-track{
+  display:flex;
+  align-items:center;
+  gap:28px;
+  padding-left:max(24px,calc((100vw - var(--max))/2));
+  will-change:transform,gap;
+}
+.photo-card{
+  flex:0 0 clamp(210px,22vw,315px);
+  aspect-ratio:3/4;
+  position:relative;
+  overflow:hidden;
+  background:#3a1456;
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 18px 55px rgba(0,0,0,.28);
+}
+.photo-card:nth-child(2){background:#752b8d}
+.photo-card:nth-child(3){background:#3b226d}
+.photo-card:nth-child(4){background:#9b3cc1}
+.photo-card:nth-child(5){background:#25103f}
+.photo-card:nth-child(6){background:#5d1c7d}
+.photo-card:after{
+  content:"PHOTO";
+  position:absolute;
+  left:18px;bottom:17px;
+  font-family:Montserrat,sans-serif;
+  font-size:9px;font-weight:800;
+  letter-spacing:.24em;color:rgba(255,255,255,.7);
+}
+.photo-card .index{
+  position:absolute;right:16px;top:15px;
+  font-family:Montserrat,sans-serif;font-size:9px;
+  letter-spacing:.15em;color:rgba(255,255,255,.55);
+}
+.carousel-note{
+  position:absolute;z-index:4;bottom:30px;left:50%;
+  transform:translateX(-50%);
+  width:min(560px,calc(100% - 40px));
+  text-align:center;color:#8f8795;
+  font-size:10px;letter-spacing:.15em;
+  text-transform:uppercase;
+}
+
+/* ABOUT */
+.about{
+  text-align:center;
+  max-width:760px;
+  margin:auto;
+}
+.aboutcopy p{
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.8;
+  letter-spacing:var(--tracking-body);
+  max-width:650px;
+  margin:24px auto 0;
+}
+
+/* CONTACT */
+.contact{
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  text-align:center;
+}
+.contact h2{
+  font-family:Montserrat,sans-serif;
+  font-size:clamp(48px,9vw,120px);
+  font-weight:800;
+  letter-spacing:var(--tracking-title);
+  line-height:.9;
+  margin:0 0 30px;
+  text-transform:uppercase;
+}
+.contactcopy{
+  max-width:580px;
+  margin:auto;
+  color:var(--muted);
+  line-height:1.7;
+  letter-spacing:var(--tracking-body);
+  font-size:13px;
+}
+.contactlinks{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin-top:30px}
+.contactlinks .btn.secondary{background:transparent;color:#fff}
+
+footer{
+  padding:34px 0;color:#77717c;font-size:10px;
+  letter-spacing:var(--tracking-body);
+  text-align:center;
+}
+footer span{display:block;margin:5px 0}
+
+/* MOBILE */
+@media(max-width:800px){
+  .wrap{width:min(var(--max),calc(100% - 28px))}
+  .nav{padding:13px 0}
+  .links{display:none}
+  .navlogo{width:105px;height:40px}
+  .hero{padding:120px 0 55px}
+  .hero h1{font-size:clamp(42px,13vw,72px);letter-spacing:.18em}
+  .hero-copy{font-size:12px;letter-spacing:.10em}
+  section{padding:80px 0}
+  .title{letter-spacing:.18em}
+  .intro,.service p,.aboutcopy p,.contactcopy{letter-spacing:.08em}
+  .clients{gap:14px}
+  .client-logo{width:135px;height:64px}
+  .services{grid-template-columns:1fr 1fr}
+  .service{min-height:210px;padding:28px 18px}
+  .service h3{font-size:18px;letter-spacing:.16em}
+  .photo-scroll{height:125vh;margin-top:50px}
+  .photo-track{gap:20px}
+  .photo-card{flex-basis:220px}
+}
+@media(max-width:500px){
+  .hero h1{letter-spacing:.10em}
+  .hero-copy{letter-spacing:.06em}
+  .actions .btn{width:100%}
+  .services{grid-template-columns:1fr}
+  .service{min-height:auto}
+  .clients{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .client-logo{width:100%}
+  .photo-card{flex-basis:205px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none;transition:none}
+  .hero-media,.photo-track{transform:none!important}
+}
+</style>
+</head>
+
+<body>
+<nav class="nav">
+  <div class="wrap navin">
+    <a class="navlogo" href="#top" aria-label="Morao Media">
+      <img src="morao-logo.jpg" alt="Morao Media">
+    </a>
+    <div class="links">
+      <a href="#services">SERVICES</a>
+      <a href="#about">ABOUT</a>
+      <a href="#contact">CONTACT</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-media" id="heroMedia" aria-hidden="true"></div>
+  <div class="wrap hero-content">
+    <h1 class="reveal">MORAO<br>MEDIA</h1>
+    <p class="hero-copy reveal">Contenido audiovisual para música, eventos y marcas.</p>
+    <div class="actions reveal">
+      <a class="btn" href="#contact">TRABAJEMOS JUNTOS</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section class="clients-section">
+  <div class="wrap">
+    <div class="sectionhead reveal">
+      <h2 class="title">Worked With</h2>
+    </div>
+    <div class="clients reveal">
+      <div class="client-logo"><span>LOGO / MUSICOL DC</span></div>
+      <div class="client-logo"><span>LOGO / CMN EVENTS</span></div>
+      <div class="client-logo"><span>LOGO / MOTOR CAR MOVEMENT SHOW</span></div>
+      <div class="client-logo"><span>LOGO / ACREDITANDO</span></div>
+      <div class="client-logo"><span>LOGO / SONY MUSIC</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="wrap services-wrap">
+    <div class="sectionhead reveal">
+      <h2 class="title">Services</h2>
+      <p class="intro">Foto, video y contenido para proyectos que necesitan presencia.</p>
+    </div>
+
+    <div class="services reveal">
+      <article class="service">
+        <h3>Fotografía</h3>
+        <p>Conciertos<br>Eventos<br>Retratos<br>Marcas</p>
+      </article>
+      <article class="service">
+        <h3>Video</h3>
+        <p>Cobertura<br>Videorecaps<br>Aftermovies<br>Eventos</p>
+      </article>
+      <article class="service">
+        <h3>Social</h3>
+        <p>Reels<br>Vertical<br>Contenido<br>Eventos</p>
+      </article>
+      <article class="service">
+        <h3>Producción</h3>
+        <p>Planeación<br>Grabación<br>Edición<br>Entrega</p>
+      </article>
+    </div>
+
+    <div class="photo-scroll" id="photoScroll">
+      <div class="photo-sticky">
+        <div class="photo-track" id="photoTrack">
+          <div class="photo-card"><span class="index">01</span></div>
+          <div class="photo-card"><span class="index">02</span></div>
+          <div class="photo-card"><span class="index">03</span></div>
+          <div class="photo-card"><span class="index">04</span></div>
+          <div class="photo-card"><span class="index">05</span></div>
+          <div class="photo-card"><span class="index">06</span></div>
+        </div>
+      </div>
+      <div class="carousel-note">SCROLL TO EXPLORE / PHOTOGRAPHY</div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap about">
+    <div class="aboutcopy">
+      <div class="sectionhead reveal">
+        <h2 class="title">About</h2>
+      </div>
+      <p class="reveal">Morao Media nace de la pasión por la producción audiovisual.</p>
+      <p class="reveal">Música, eventos y contenido con una mirada propia.</p>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <div class="reveal">
+      <h2>¿TIENES<br>UN PROYECTO?</h2>
+    </div>
+    <p class="contactcopy reveal">Hablemos de lo que necesitas producir.</p>
+    <div class="contactlinks reveal">
+      <a class="btn" href="https://instagram.com/moraomedia" target="_blank" rel="noopener">INSTAGRAM @MORAO MEDIA</a>
+      <a class="btn secondary" href="mailto:moraomedia@gmail.com">moraomedia@gmail.com</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <span>© 2026 MORAO MEDIA</span>
+  <span>BOGOTÁ</span>
+</footer>
+
+<script>
+/* Text fades in when entering the viewport and fades out when leaving. */
+const revealItems = document.querySelectorAll('.reveal');
+
+const revealObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('is-visible');
+      entry.target.classList.remove('is-hidden');
+    }else{
+      entry.target.classList.remove('is-visible');
+      entry.target.classList.add('is-hidden');
+    }
+  });
+},{threshold:.12,rootMargin:'-5% 0px -5% 0px'});
+
+revealItems.forEach(el=>revealObserver.observe(el));
+
+/* Very subtle hero zoom on scroll. */
+const heroMedia = document.getElementById('heroMedia');
+
+function updateHero(){
+  const progress = Math.min(Math.max(window.scrollY / Math.max(window.innerHeight,1),0),1);
+  heroMedia.style.transform = `scale(${1 + progress * .045})`;
+}
+window.addEventListener('scroll',updateHero,{passive:true});
+updateHero();
+
+/* Editorial photography carousel:
+   large gaps at rest -> slight overlap as the section is scrolled. */
+const photoScroll = document.getElementById('photoScroll');
+const photoTrack = document.getElementById('photoTrack');
+
+function updateCarousel(){
+  const rect = photoScroll.getBoundingClientRect();
+  const total = Math.max(photoScroll.offsetHeight - window.innerHeight,1);
+  const progress = Math.min(Math.max(-rect.top / total,0),1);
+
+  const maxShift = Math.max(photoTrack.scrollWidth - window.innerWidth + 40,0);
+  const shift = maxShift * progress;
+  const gap = 28 - (46 * progress); /* 28px -> -18px */
+
+  photoTrack.style.gap = `${gap}px`;
+  photoTrack.style.transform = `translate3d(${-shift}px,0,0)`;
+}
+window.addEventListener('scroll',updateCarousel,{passive:true});
+window.addEventListener('resize',updateCarousel);
+updateCarousel();
+</script>
+</body>
+</html>
