@@ -2870,34 +2870,54 @@ document.addEventListener('DOMContentLoaded', function(){
 }
 </style>
 
-<style id="morao-v35-mobile-photo-clean">
+
+
+<style id="morao-v36-mobile-photo-sticky">
 @media(max-width:800px){
   .photography-section .photo-scroll{
-    height:650vh!important;
-    min-height:650vh!important;
+    height:900vh!important;
+    min-height:900vh!important;
+    margin:0!important;
+    position:relative!important;
   }
+
   .photography-section .photo-pin{
+    position:sticky!important;
     top:var(--header-height,60px)!important;
     height:calc(100svh - var(--header-height,60px))!important;
     min-height:0!important;
-    overflow:visible!important;
-  }
-  .photography-section .photo-stack{
-    top:22px!important;
-    height:calc(100% - 22px)!important;
     width:100vw!important;
+    overflow:hidden!important;
+    z-index:2!important;
+  }
+
+  .photography-section .photo-stack{
+    position:absolute!important;
+    top:0!important;
+    left:0!important;
+    width:100vw!important;
+    height:100%!important;
+    margin:0!important;
     overflow:visible!important;
   }
+
   .photography-section .photo-card{
-    aspect-ratio:3/4!important;
+    position:absolute!important;
+    top:50%!important;
+    left:50%!important;
+    width:58vw!important;
     max-width:none!important;
-    overflow:hidden!important;
+    height:auto!important;
+    aspect-ratio:3/4!important;
+    margin:0!important;
+    transform-origin:center center!important;
+    will-change:transform,opacity!important;
   }
 }
 @media(max-width:500px){
   .photography-section .photo-scroll{
-    height:700vh!important;
-    min-height:700vh!important;
+    height:950vh!important;
+    min-height:950vh!important;
   }
 }
 </style>
@@ -3081,38 +3101,56 @@ document.addEventListener('DOMContentLoaded', function(){
     const cards = [...photoStack.children];
     const mobile = innerWidth <= 800;
 
-    /*
-      Final footprint: eight 3:4 vertical photos fill almost the full
-      viewport width while remaining centered.
-    */
     const cardW = mobile
-      ? innerWidth * 0.58
-      : Math.min(
-          innerHeight * 1.40,
-          innerWidth * 2.35
-        );
+      ? innerWidth * (innerWidth <= 500 ? 0.56 : 0.58)
+      : Math.min(innerHeight * 1.40, innerWidth * 2.35);
     const cardH = cardW / 0.75;
 
-    cards.forEach((card, i) => {
-      const start = i === 0 ? 0 : i * 0.082;
-      const duration = i === 0 ? 0 : 0.20;
-      const q = i === 0 ? 1 : ease(clamp((p - start) / duration));
+    if (mobile) {
+      /*
+        Mobile = one pinned viewport controlled entirely by scroll.
+        Photo 1 is already present. Scroll then reveals 2→8.
+      */
+      const photo1Fade = 1;
 
-      const startX = mobile ? innerWidth * 0.95 : innerWidth * 1.30;
-      const step = cardW * (mobile ? 0.14 : 0.135);
-      const finalX = (i - 3.5) * step;
-      const x = mobile && i === 0
-        ? 0
-        : startX + (finalX - startX) * q;
+      cards.forEach((card, i) => {
+        const start = i === 0 ? 0 : (i - 1) / 7 * 0.88;
+        const duration = i === 0 ? 0 : 0.14;
+        const q = i === 0 ? 1 : ease(clamp((p - start) / duration));
 
-      card.style.width = cardW + "px";
-      card.style.opacity = q;
-      const compositionScale = mobile ? 1.0 : 1.16;
-      const verticalOffset = mobile ? 28 : 68;
-      card.style.transform =
-        `translate3d(calc(-50% + ${x}px), calc(-50% + ${verticalOffset}px), 0) scale(${compositionScale})`;
-      card.style.zIndex = i + 1;
-    });
+        const step = cardW * 0.13;
+        const finalX = (i - 3.5) * step;
+
+        /* First card stays centered; others travel from the right. */
+        const entryX = innerWidth * 0.72;
+        const x = i === 0 ? 0 : entryX + (finalX - entryX) * q;
+
+        card.style.width = cardW + "px";
+        card.style.height = cardH + "px";
+        card.style.opacity = q;
+        card.style.transform =
+          `translate3d(calc(-50% + ${x}px),calc(-50% + 28px),0)`;
+        card.style.zIndex = i + 1;
+      });
+    } else {
+      cards.forEach((card, i) => {
+        const start = i === 0 ? 0 : i * 0.082;
+        const duration = i === 0 ? 0 : 0.20;
+        const q = i === 0 ? 1 : ease(clamp((p - start) / duration));
+
+        const startX = innerWidth * 1.30;
+        const step = cardW * 0.135;
+        const finalX = (i - 3.5) * step;
+        const x = startX + (finalX - startX) * q;
+
+        card.style.width = cardW + "px";
+        card.style.height = cardH + "px";
+        card.style.opacity = q;
+        card.style.transform =
+          `translate3d(calc(-50% + ${x}px),calc(-50% + 68px),0) scale(1.16)`;
+        card.style.zIndex = i + 1;
+      });
+    }
 /*
       The title belongs to the sticky stage itself:
       it appears with photo 1, stays at exactly the same viewport position
