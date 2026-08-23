@@ -2870,17 +2870,14 @@ document.addEventListener('DOMContentLoaded', function(){
 }
 </style>
 
-
-
-<style id="morao-v36-mobile-photo-sticky">
-@media(max-width:800px){
+<style id="morao-photo-mobile-clean-final">
+@media (max-width:800px){
   .photography-section .photo-scroll{
-    height:900vh!important;
-    min-height:900vh!important;
+    height:780vh!important;
+    min-height:780vh!important;
     margin:0!important;
     position:relative!important;
   }
-
   .photography-section .photo-pin{
     position:sticky!important;
     top:var(--header-height,60px)!important;
@@ -2888,36 +2885,30 @@ document.addEventListener('DOMContentLoaded', function(){
     min-height:0!important;
     width:100vw!important;
     overflow:hidden!important;
-    z-index:2!important;
   }
-
   .photography-section .photo-stack{
     position:absolute!important;
-    top:0!important;
-    left:0!important;
+    inset:0!important;
     width:100vw!important;
     height:100%!important;
     margin:0!important;
     overflow:visible!important;
   }
-
   .photography-section .photo-card{
     position:absolute!important;
     top:50%!important;
     left:50%!important;
-    width:58vw!important;
-    max-width:none!important;
-    height:auto!important;
     aspect-ratio:3/4!important;
     margin:0!important;
-    transform-origin:center center!important;
-    will-change:transform,opacity!important;
+    max-width:none!important;
+    border:0!important;
+    transform-origin:center!important;
   }
 }
-@media(max-width:500px){
+@media (max-width:500px){
   .photography-section .photo-scroll{
-    height:950vh!important;
-    min-height:950vh!important;
+    height:820vh!important;
+    min-height:820vh!important;
   }
 }
 </style>
@@ -3101,38 +3092,41 @@ document.addEventListener('DOMContentLoaded', function(){
     const cards = [...photoStack.children];
     const mobile = innerWidth <= 800;
 
-    const cardW = mobile
-      ? innerWidth * (innerWidth <= 500 ? 0.56 : 0.58)
-      : Math.min(innerHeight * 1.40, innerWidth * 2.35);
-    const cardH = cardW / 0.75;
-
+    /*
+      MOBILE:
+      The sticky viewport remains in place while scroll progress controls
+      the complete 1→8 sequence. Photo 1 is visible immediately.
+      Desktop keeps the existing composition values.
+    */
     if (mobile) {
-      /*
-        Mobile = one pinned viewport controlled entirely by scroll.
-        Photo 1 is already present. Scroll then reveals 2→8.
-      */
-      const photo1Fade = 1;
+      const cardW = innerWidth <= 500 ? innerWidth * 0.54 : innerWidth * 0.56;
+      const cardH = cardW / 0.75;
+      const step = cardW * 0.14;
+      const entryX = innerWidth * 0.92;
+      const verticalOffset = 30;
 
       cards.forEach((card, i) => {
-        const start = i === 0 ? 0 : (i - 1) / 7 * 0.88;
-        const duration = i === 0 ? 0 : 0.14;
+        const start = i === 0 ? 0 : 0.10 + (i - 1) * 0.115;
+        const duration = i === 0 ? 0 : 0.145;
         const q = i === 0 ? 1 : ease(clamp((p - start) / duration));
 
-        const step = cardW * 0.13;
         const finalX = (i - 3.5) * step;
-
-        /* First card stays centered; others travel from the right. */
-        const entryX = innerWidth * 0.72;
         const x = i === 0 ? 0 : entryX + (finalX - entryX) * q;
 
         card.style.width = cardW + "px";
         card.style.height = cardH + "px";
         card.style.opacity = q;
         card.style.transform =
-          `translate3d(calc(-50% + ${x}px),calc(-50% + 28px),0)`;
+          `translate3d(calc(-50% + ${x}px), calc(-50% + ${verticalOffset}px), 0)`;
         card.style.zIndex = i + 1;
       });
     } else {
+      const cardH = Math.min(
+        innerHeight * 1.40,
+        innerWidth * 2.35
+      );
+      const cardW = cardH * 0.75;
+
       cards.forEach((card, i) => {
         const start = i === 0 ? 0 : i * 0.082;
         const duration = i === 0 ? 0 : 0.20;
@@ -3147,20 +3141,13 @@ document.addEventListener('DOMContentLoaded', function(){
         card.style.height = cardH + "px";
         card.style.opacity = q;
         card.style.transform =
-          `translate3d(calc(-50% + ${x}px),calc(-50% + 68px),0) scale(1.16)`;
+          `translate3d(calc(-50% + ${x}px), calc(-50% + 68px), 0) scale(1.16)`;
         card.style.zIndex = i + 1;
       });
     }
-/*
-      The title belongs to the sticky stage itself:
-      it appears with photo 1, stays at exactly the same viewport position
-      through the complete 1→8 sequence, then naturally leaves when the
-      sticky stage ends.
-    */
+
     const title = document.querySelector('.photo-title-fixed');
-    if (title) {
-      title.style.opacity = p < 0.98 ? 1 : 1;
-    }
+    if (title) title.style.opacity = 1;
   }
 
   function updateVideo() {
