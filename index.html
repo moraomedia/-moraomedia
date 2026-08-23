@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Morao Media — Producción Audiovisual</title>
+<meta name="description" content="Morao Media — Producción audiovisual, fotografía, video y contenido para música, eventos, marcas y proyectos.">
+<meta name="theme-color" content="#08070b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08070b;--surface:#100d15;--text:#f5f2f7;--muted:#aaa3b0;--purple:#8b3dff;--light:#c56cff;--border:rgba(255,255,255,.11);--max:1280px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 85% 0%,rgba(139,61,255,.16),transparent 28%),var(--bg);color:var(--text);font-family:Helvetica,Arial,sans-serif;overflow-x:hidden}img{display:block;max-width:100%}a{color:inherit;text-decoration:none}.wrap{width:min(var(--max),calc(100% - 48px));margin:auto}
+.nav{position:fixed;z-index:100;inset:0 0 auto;padding:18px 0;background:linear-gradient(180deg,rgba(8,7,11,.94),transparent);backdrop-filter:blur(10px)}.navin{display:flex;align-items:center;justify-content:space-between}.navlogo{width:125px;height:48px;overflow:hidden;border-radius:5px;background:#09070d}.navlogo img{width:100%;height:100%;object-fit:cover;transform:scale(1.72)}.links{display:flex;gap:30px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em}.links a{color:#d8d2dc}.links a:hover{color:var(--light)}
+.hero{position:relative;min-height:100svh;display:grid;align-items:end;padding:150px 0 75px;overflow:hidden}.hero-bg{position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,7,11,.97),rgba(8,7,11,.6),rgba(8,7,11,.88)),radial-gradient(circle at 72% 42%,rgba(139,61,255,.4),transparent 34%),linear-gradient(135deg,#1c1027,#08070b 60%,#240d38)}.hero-content{position:relative;z-index:2}.eyebrow,.kicker{font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;letter-spacing:.25em;color:#b99cc9}.hero-logo{width:min(520px,80vw);margin:25px 0 28px;border-radius:6px;overflow:hidden;background:#09070d}.hero-logo img{width:100%;aspect-ratio:1;object-fit:cover}.hero-copy{max-width:650px;font-size:clamp(18px,2.2vw,28px);line-height:1.2;color:#e0d9e4}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:13px 21px;border-radius:999px;border:1px solid var(--border);background:#fff;color:#09070b;font-family:Montserrat,sans-serif;font-size:10px;font-weight:800;letter-spacing:.12em;transition:.25s}.btn.secondary{background:transparent;color:#fff}.btn:hover{transform:translateY(-2px);border-color:var(--light)}
+section{padding:115px 0}.sectionhead{display:flex;align-items:end;justify-content:space-between;gap:40px;margin-bottom:42px}.title{font-family:Montserrat,sans-serif;font-size:clamp(44px,7vw,92px);font-weight:800;line-height:.9;letter-spacing:-.06em;margin:10px 0 0}.intro{max-width:430px;color:var(--muted);line-height:1.65;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}.project{position:relative;min-height:360px;overflow:hidden;border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:.4s}.project:nth-child(1){grid-column:span 7;min-height:520px}.project:nth-child(2),.project:nth-child(3){grid-column:span 5}.project:nth-child(4){grid-column:span 7;min-height:430px}.project:nth-child(5),.project:nth-child(6){grid-column:span 6}.visual{position:absolute;inset:0;background:radial-gradient(circle at 65% 35%,rgba(139,61,255,.55),transparent 27%),linear-gradient(135deg,#241331,#09070b 65%,#32104b);transition:.6s}.visual:after{content:"PHOTO / VIDEO PLACEHOLDER";position:absolute;left:22px;top:22px;color:rgba(255,255,255,.42);font-family:Montserrat,sans-serif;font-size:9px;letter-spacing:.18em}.info{position:absolute;z-index:2;inset:auto 0 0;padding:27px;background:linear-gradient(transparent,rgba(0,0,0,.94))}.info h3{font-family:Montserrat,sans-serif;font-size:25px;margin:0 0 7px}.info p{color:#bbb4c0;font-size:12px;margin:0}.project:hover{transform:translateY(-5px);border-color:rgba(197,108,255,.65)}.project:hover .visual{transform:scale(1.035)}
+.clients{display:flex;flex-wrap:wrap;gap:10px;margin-top:25px}.pill{border:1px solid var(--border);padding:14px 18px;border-radius:999px;color:#c8c1cc;font-family:Montserrat,sans-serif;font-size:11px;font-weight:600}
+.services{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border)}.service{background:var(--bg);padding:32px;min-height:230px}.service h3{font-family:Montserrat,sans-serif;font-size:23px;margin:0 0 20px}.service p{color:var(--muted);font-size:13px;line-height:1.9;margin:0}
+.about{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}.aboutvisual{min-height:500px;border:1px solid var(--border);background:radial-gradient(circle at 60% 35%,rgba(139,61,255,.45),transparent 25%),linear-gradient(135deg,#21132e,#08070b);display:grid;place-items:center;color:#837a89;font-family:Montserrat,sans-serif;font-size:10px;letter-spacing:.2em}.aboutcopy p{color:#b8b1bd;font-size:17px;line-height:1.75}
+.contact{border-top:1px solid var(--border);border-bottom:1px solid var(--border)}.contact h2{font-family:Montserrat,sans-serif;font-size:clamp(48px,9vw,120px);font-weight:800;letter-spacing:-.07em;line-height:.86;margin:12px 0 34px}.contactcopy{max-width:560px;color:var(--muted);line-height:1.65}.contactlinks{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+footer{padding:34px 0;color:#77717c;font-size:11px;display:flex;justify-content:space-between;gap:20px}
+@media(max-width:800px){.wrap{width:min(var(--max),calc(100% - 28px))}.nav{padding:13px 0}.links{display:none}.navlogo{width:105px;height:40px}.hero{padding:120px 0 55px}.hero-logo{width:min(400px,92vw)}section{padding:80px 0}.sectionhead{display:block}.intro{margin-top:25px}.grid{display:block}.project,.project:nth-child(n){min-height:390px;margin-bottom:12px}.services{grid-template-columns:1fr 1fr}.about{grid-template-columns:1fr;gap:30px}.aboutvisual{min-height:360px}footer{display:block}footer span{display:block;margin-top:9px}}
+@media(max-width:500px){.hero-logo{width:100%}.services{grid-template-columns:1fr}.service{min-height:0}.contactlinks .btn{width:100%}}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap navin"><a class="navlogo" href="#top" aria-label="Morao Media"><img src="assets/logo/morao-logo.jpg" alt="Morao Media"></a><div class="links"><a href="#work">WORK</a><a href="#services">SERVICES</a><a href="#about">ABOUT</a><a href="#contact">CONTACT</a></div></div></nav>
+
+<header class="hero" id="top"><div class="hero-bg"></div><div class="wrap hero-content"><div class="eyebrow">AUDIOVISUAL PRODUCTION / BOGOTÁ</div><h1 style="position:absolute;width:1px;height:1px;overflow:hidden">Morao Media — Producción Audiovisual</h1><div class="hero-logo"><img src="assets/logo/morao-logo.jpg" alt="Morao Media — Producción audiovisual"></div><p class="hero-copy">Contenido audiovisual para música, eventos, marcas y proyectos que merecen ser recordados.</p><div class="actions"><a class="btn" href="#work">VER TRABAJOS</a><a class="btn secondary" href="#contact">TRABAJEMOS JUNTOS</a></div></div></header>
+
+<main>
+<section id="work"><div class="wrap"><div class="sectionhead"><div><div class="kicker">01 / WORK</div><h2 class="title">Trabajo real.<br>Presencia visual.</h2></div><p class="intro">Portafolio preparado para fotografía, video, cobertura, contenido social y producción audiovisual. Los espacios visuales están listos para recibir el material real de Morao Media.</p></div><div class="grid">
+<article class="project"><div class="visual"></div><div class="info"><h3>CMN Events</h3><p>Concert Photography / Social Content / Videorecap</p></div></article>
+<article class="project"><div class="visual"></div><div class="info"><h3>Musicol DC</h3><p>Concert Photography / Event Coverage</p></div></article>
+<article class="project"><div class="visual"></div><div class="info"><h3>Motor Car Movement Show</h3><p>Audiovisual Production</p></div></article>
+<article class="project"><div class="visual"></div><div class="info"><h3>Acreditando</h3><p>Audiovisual Production / Event Content</p></div></article>
+<article class="project"><div class="visual"></div><div class="info"><h3>Sony Music</h3><p>Audiovisual Content / Events</p></div></article>
+<article class="project"><div class="visual"></div><div class="info"><h3>Bodas &amp; Events</h3><p>Photography / Personal Events</p></div></article>
+</div></div></section>
+
+<section><div class="wrap"><div class="kicker">02 / TRUSTED / WORKED WITH</div><div class="clients"><span class="pill">Musicol DC</span><span class="pill">CMN Events</span><span class="pill">Motor Car Movement Show</span><span class="pill">Acreditando</span><span class="pill">Sony Music</span></div></div></section>
+
+<section id="services"><div class="wrap"><div class="sectionhead"><div><div class="kicker">03 / SERVICES</div><h2 class="title">Lo que<br>hacemos.</h2></div></div><div class="services">
+<div class="service"><h3>Fotografía</h3><p>Conciertos<br>Eventos<br>Retratos<br>Cobertura de marca<br>Bodas y eventos personales</p></div>
+<div class="service"><h3>Video</h3><p>Cobertura audiovisual<br>Videorecaps<br>Contenido para redes<br>Aftermovies<br>Producción de eventos</p></div>
+<div class="service"><h3>Social Content</h3><p>Reels<br>Contenido vertical<br>Fotografía para redes<br>Contenido inmediato para eventos</p></div>
+<div class="service"><h3>Producción</h3><p>Planeación<br>Producción<br>Grabación<br>Edición<br>Entrega de contenido</p></div>
+</div></div></section>
+
+<section id="about"><div class="wrap about"><div class="aboutvisual">ABOUT / IMAGE PLACEHOLDER</div><div class="aboutcopy"><div class="kicker">04 / ABOUT</div><h2 class="title">Detrás de<br>cámara.</h2><p>Morao Media nace desde la pasión por la producción audiovisual y una fuerte conexión con la música, los eventos y la creación de contenido.</p><p>Nos integramos a los proyectos para convertir momentos, espacios y experiencias en contenido visual que vale la pena recordar.</p></div></div></section>
+
+<section id="contact" class="contact"><div class="wrap"><div class="kicker">05 / CONTACT</div><h2>¿TIENES<br>UN PROYECTO?</h2><p class="contactcopy">Cuéntanos qué tienes en mente, qué necesitas producir y dónde ocurre. Estamos listos para hablar de fotografía, video, contenido o producción audiovisual.</p><div class="contactlinks"><a class="btn" href="https://instagram.com/moraomedia" target="_blank" rel="noopener">INSTAGRAM @MORAO MEDIA</a><a class="btn secondary" href="mailto:moraomedia@gmail.com">MORAO MEDIA@GMAIL.COM</a></div></div></section>
+</main>
+<footer class="wrap"><span>© 2026 MORAO MEDIA</span><span>PRODUCCIÓN AUDIOVISUAL / BOGOTÁ</span></footer>
+</body>
+</html>
