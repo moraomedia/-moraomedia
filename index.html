@@ -2870,23 +2870,28 @@ document.addEventListener('DOMContentLoaded', function(){
 }
 </style>
 
-<style id="morao-v38-mobile-photo-sticky-real">
+
+
+<style id="morao-v39-mobile-photo-stack">
 @media(max-width:800px){
+  /* One pinned viewport; the scroll only advances the overlay sequence. */
   .photography-section .photo-scroll{
-    height:720vh!important;
-    min-height:720vh!important;
+    height:620vh!important;
+    min-height:620vh!important;
     margin:0!important;
     position:relative!important;
   }
+
   .photography-section .photo-pin{
     position:sticky!important;
     top:var(--header-height,60px)!important;
     height:calc(100svh - var(--header-height,60px))!important;
-    width:100vw!important;
     min-height:0!important;
+    width:100vw!important;
     display:block!important;
-    overflow:visible!important;
+    overflow:hidden!important;
   }
+
   .photography-section .photo-stack{
     position:absolute!important;
     inset:0!important;
@@ -2895,26 +2900,29 @@ document.addEventListener('DOMContentLoaded', function(){
     margin:0!important;
     overflow:visible!important;
   }
+
   .photography-section .photo-card{
     position:absolute!important;
     top:50%!important;
     left:50%!important;
-    width:56vw!important;
-    height:auto!important;
-    aspect-ratio:3/4!important;
+    width:58vw!important;
     max-width:none!important;
+    height:auto!important;
+    aspect-ratio:3 / 4!important;
     margin:0!important;
     border:0!important;
     overflow:hidden!important;
+    transform-origin:center center!important;
   }
 }
+
 @media(max-width:500px){
   .photography-section .photo-scroll{
-    height:780vh!important;
-    min-height:780vh!important;
+    height:680vh!important;
+    min-height:680vh!important;
   }
   .photography-section .photo-card{
-    width:54vw!important;
+    width:56vw!important;
   }
 }
 </style>
@@ -3099,60 +3107,64 @@ document.addEventListener('DOMContentLoaded', function(){
 
     if (mobile) {
       /*
-        Mobile photography is a real scroll-controlled sticky scene.
-        Progress is calculated from the section's document position rather
-        than its current bounding box, so it keeps advancing while sticky.
+        MOBILE:
+        The viewport stays locked on one photography stage.
+        The page scroll only controls the stacking animation.
+        Photo 1 never moves; photos 2→8 fade/slide over it.
       */
       const sectionTop = photoScroll.getBoundingClientRect().top + scrollY;
       const travel = Math.max(photoScroll.offsetHeight - innerHeight, 1);
       const p = clamp((scrollY - sectionTop) / travel);
 
-      const cardW = innerWidth <= 500 ? innerWidth * 0.54 : innerWidth * 0.56;
+      const cardW = innerWidth <= 500
+        ? innerWidth * 0.56
+        : innerWidth * 0.58;
       const cardH = cardW / 0.75;
-      const step = cardW * 0.14;
+
       const entryX = innerWidth * 0.95;
+      const verticalOffset = 24;
 
-      cards.forEach((card,i)=>{
-        const start = i === 0 ? 0 : (i-1) * 0.115;
-        const duration = i === 0 ? 0 : 0.135;
-        const q = i === 0 ? 1 : ease(clamp((p-start)/duration));
+      cards.forEach((card, i) => {
+        const start = i === 0 ? 0 : 0.08 + (i - 1) * 0.12;
+        const duration = i === 0 ? 0 : 0.16;
+        const q = i === 0 ? 1 : ease(clamp((p - start) / duration));
 
-        const finalX = (i-3.5) * step;
-        const x = i === 0 ? 0 : entryX + (finalX-entryX)*q;
+        /* Every image ends in exactly the same center point. */
+        const x = i === 0 ? 0 : entryX * (1 - q);
 
         card.style.width = cardW + "px";
         card.style.height = cardH + "px";
         card.style.opacity = q;
         card.style.transform =
-          `translate3d(calc(-50% + ${x}px),calc(-50% + 28px),0)`;
-        card.style.zIndex = i+1;
+          `translate3d(calc(-50% + ${x}px), calc(-50% + ${verticalOffset}px), 0)`;
+        card.style.zIndex = i + 1;
       });
     } else {
       const p = sectionProgress(photoScroll);
-      const cardH = Math.min(innerHeight*1.40, innerWidth*2.35);
-      const cardW = cardH*0.75;
+      const cardH = Math.min(innerHeight * 1.40, innerWidth * 2.35);
+      const cardW = cardH * 0.75;
 
-      cards.forEach((card,i)=>{
-        const start = i === 0 ? 0 : i*0.082;
+      cards.forEach((card, i) => {
+        const start = i === 0 ? 0 : i * 0.082;
         const duration = i === 0 ? 0 : 0.20;
-        const q = i === 0 ? 1 : ease(clamp((p-start)/duration));
+        const q = i === 0 ? 1 : ease(clamp((p - start) / duration));
 
-        const startX = innerWidth*1.30;
-        const step = cardW*0.135;
-        const finalX = (i-3.5)*step;
-        const x = startX + (finalX-startX)*q;
+        const startX = innerWidth * 1.30;
+        const step = cardW * 0.135;
+        const finalX = (i - 3.5) * step;
+        const x = startX + (finalX - startX) * q;
 
-        card.style.width = cardW+"px";
-        card.style.height = cardH+"px";
+        card.style.width = cardW + "px";
+        card.style.height = cardH + "px";
         card.style.opacity = q;
         card.style.transform =
-          `translate3d(calc(-50% + ${x}px),calc(-50% + 68px),0) scale(1.16)`;
-        card.style.zIndex = i+1;
+          `translate3d(calc(-50% + ${x}px), calc(-50% + 68px), 0) scale(1.16)`;
+        card.style.zIndex = i + 1;
       });
     }
 
-    const title=document.querySelector('.photo-title-fixed');
-    if(title) title.style.opacity=1;
+    const title = document.querySelector('.photo-title-fixed');
+    if (title) title.style.opacity = 1;
   }
 
   function updateVideo() {
