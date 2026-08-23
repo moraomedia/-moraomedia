@@ -1902,6 +1902,860 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 }
 </style>
+
+<style id="morao-audiovisual-title-lock">
+/*
+  Titles are part of each section's sticky viewport, exactly like
+  FOTOGRAFÍA. They do not scroll away while that section's animation runs.
+*/
+.photography-section,
+.video-section,
+.social-section{
+  padding:0!important;
+  position:relative!important;
+}
+
+/* Photography reference */
+.photography-section .photo-scroll,
+.video-section .video-sequence,
+.social-section .social-sequence{
+  position:relative!important;
+  margin:0!important;
+}
+
+.photography-section .photo-pin,
+.video-section .media-pin,
+.social-section .media-pin{
+  position:sticky!important;
+  top:0!important;
+  height:100svh!important;
+  width:100vw!important;
+  margin:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+}
+
+/* Identical title treatment and viewport position */
+.photo-title-fixed,
+.media-title-fixed{
+  position:absolute!important;
+  top:76px!important;
+  left:0!important;
+  width:100%!important;
+  height:24px!important;
+  z-index:1000!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  margin:0!important;
+  padding:0!important;
+  color:#fff!important;
+  font-family:Montserrat,Arial,sans-serif!important;
+  font-size:clamp(22px,2.2vw,30px)!important;
+  font-weight:500!important;
+  line-height:1!important;
+  letter-spacing:.12em!important;
+  text-align:center!important;
+  opacity:1!important;
+  visibility:visible!important;
+  transform:none!important;
+  filter:none!important;
+  pointer-events:none!important;
+}
+
+/* Photography content stays under its title */
+.photography-section .photo-stack{
+  position:absolute!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100svh!important;
+  margin:0!important;
+}
+
+/* Video: title + first video occupy the same viewport immediately */
+.video-section .video-sequence{
+  height:320vh!important;
+}
+.video-section .media-pin{
+  position:sticky!important;
+}
+.video-section .video-card{
+  position:absolute!important;
+  top:50%!important;
+  left:50%!important;
+  width:min(92vw,1400px)!important;
+  aspect-ratio:16/9!important;
+  margin:0!important;
+  transform-origin:center!important;
+}
+
+/* Social: title + full three-video composition */
+.social-section .social-sequence{
+  height:300vh!important;
+}
+.social-section .social-composition{
+  width:min(94vw,1500px)!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:14px!important;
+  margin:0!important;
+}
+.social-section .social-card{
+  width:calc((100% - 28px)/3)!important;
+  flex:0 0 calc((100% - 28px)/3)!important;
+  aspect-ratio:16/9!important;
+}
+
+/* Keep the title close to the actual media rather than creating a separate block. */
+@media(max-width:800px){
+  .photo-title-fixed,
+  .media-title-fixed{
+    top:64px!important;
+    height:20px!important;
+    font-size:18px!important;
+    letter-spacing:.12em!important;
+  }
+  .video-section .video-sequence{
+    height:300vh!important;
+  }
+  .social-section .social-sequence{
+    height:280vh!important;
+  }
+  .social-section .social-composition{
+    width:94vw!important;
+    gap:8px!important;
+  }
+  .social-section .social-card{
+    width:calc((100% - 16px)/3)!important;
+    flex-basis:calc((100% - 16px)/3)!important;
+  }
+}
+</style>
+
+<style id="morao-title-final-positions">
+/* Photography: restore the lower position used previously. */
+.photography-section .photo-title-fixed{
+  top:118px!important;
+}
+
+/* Social: move the title slightly lower than the common title position. */
+.social-section .media-title-fixed{
+  top:86px!important;
+}
+
+@media(max-width:800px){
+  .photography-section .photo-title-fixed{
+    top:98px!important;
+  }
+  .social-section .media-title-fixed{
+    top:74px!important;
+  }
+}
+</style>
+
+<style id="morao-title-photography-correction">
+.photography-section .photo-title-fixed{
+  top:88px!important;
+}
+@media(max-width:800px){
+  .photography-section .photo-title-fixed{
+    top:72px!important;
+  }
+}
+</style>
+
+<style id="morao-title-photography-up">
+.photography-section .photo-title-fixed{
+  top:78px!important;
+}
+@media(max-width:800px){
+  .photography-section .photo-title-fixed{
+    top:64px!important;
+  }
+}
+</style>
+
+<style id="morao-title-photography-lower">
+.photography-section .photo-title-fixed{
+  top:84px!important;
+}
+@media(max-width:800px){
+  .photography-section .photo-title-fixed{
+    top:70px!important;
+  }
+}
+</style>
+
+<style id="morao-all-section-title-properties">
+/* VIDEO: slightly lower than Photography */
+.video-section .media-title-fixed{
+  top:92px!important;
+}
+
+/* ABOUT + CONTACT: same editorial title treatment */
+#about .title,
+#contact h2{
+  font-family:Montserrat,Arial,sans-serif!important;
+  font-size:clamp(22px,2.2vw,30px)!important;
+  font-weight:500!important;
+  line-height:1!important;
+  letter-spacing:.12em!important;
+  text-align:center!important;
+  text-transform:uppercase!important;
+  margin:0!important;
+  padding:0!important;
+}
+
+#about .sectionhead,
+#contact .reveal:first-child{
+  width:100%!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+
+@media(max-width:800px){
+  .video-section .media-title-fixed{
+    top:78px!important;
+  }
+  #about .title,
+  #contact h2{
+    font-size:18px!important;
+    letter-spacing:.12em!important;
+  }
+}
+</style>
+
+<style id="morao-v5-slogan-nav-title">
+/* Hero slogan: substantially lower, almost at the bottom edge. */
+.hero-copy{
+  bottom:-1vh!important;
+}
+@media(max-width:800px){
+  .hero-copy{
+    bottom:-1.5vh!important;
+  }
+}
+
+/* Contact title must remain on one line. */
+#contact h2{
+  white-space:nowrap!important;
+  word-break:normal!important;
+  overflow:visible!important;
+  font-size:clamp(18px,2vw,28px)!important;
+}
+@media(max-width:800px){
+  #contact h2{
+    font-size:clamp(13px,4.2vw,19px)!important;
+    letter-spacing:.08em!important;
+  }
+}
+</style>
+
+<style id="morao-v6-copy-contact">
+/* Contact title: one line, with enough room for the full phrase. */
+#contact .wrap{
+  width:min(96vw,1800px)!important;
+}
+#contact .reveal:first-child{
+  width:100%!important;
+}
+#contact h2{
+  white-space:nowrap!important;
+  display:block!important;
+  width:max-content!important;
+  max-width:none!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  font-size:clamp(17px,2.1vw,30px)!important;
+  letter-spacing:.10em!important;
+}
+@media(max-width:800px){
+  #contact .wrap{
+    width:96vw!important;
+  }
+  #contact h2{
+    font-size:clamp(11px,3.9vw,18px)!important;
+    letter-spacing:.06em!important;
+  }
+}
+
+/* MORAO section copy: refined editorial width and readable rhythm. */
+#about .aboutcopy{
+  max-width:900px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+#about .aboutcopy p{
+  max-width:820px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  line-height:1.35!important;
+}
+</style>
+
+<style id="morao-v7-hero-about-contact">
+/* HERO: slogan almost at the absolute bottom. */
+.hero-copy{
+  bottom:-5vh!important;
+}
+@media(max-width:800px){
+  .hero-copy{
+    bottom:-4vh!important;
+  }
+}
+
+/* MORAO: split layout with 9:16 video placeholder on the left. */
+#about .about{
+  display:grid!important;
+  grid-template-columns:minmax(180px,32%) minmax(0,1fr)!important;
+  gap:clamp(28px,5vw,90px)!important;
+  align-items:center!important;
+}
+#about .aboutcopy{
+  max-width:850px!important;
+  margin:0!important;
+}
+#about .aboutcopy p{
+  max-width:none!important;
+  text-align:justify!important;
+  text-justify:inter-word!important;
+  line-height:1.35!important;
+}
+#about .about-video-placeholder{
+  width:min(100%,360px)!important;
+  aspect-ratio:9/16!important;
+  margin:0 auto!important;
+  background:rgba(255,255,255,.035)!important;
+  border:1px solid rgba(255,255,255,.14)!important;
+  position:relative!important;
+  overflow:hidden!important;
+}
+#about .about-video-placeholder::after{
+  content:"VIDEO 9:16";
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:Montserrat,Arial,sans-serif;
+  font-size:10px;
+  letter-spacing:.18em;
+  opacity:.45;
+}
+
+/* CONTACT: guarantee one-line title by giving it the full viewport width. */
+#contact .wrap{
+  width:100vw!important;
+  max-width:none!important;
+  padding-left:2vw!important;
+  padding-right:2vw!important;
+  box-sizing:border-box!important;
+}
+#contact .reveal:first-child{
+  width:100%!important;
+  max-width:none!important;
+  overflow:visible!important;
+}
+#contact h2{
+  white-space:nowrap!important;
+  width:100%!important;
+  max-width:none!important;
+  display:block!important;
+  font-size:clamp(16px,2.15vw,30px)!important;
+  letter-spacing:.08em!important;
+  text-align:center!important;
+}
+@media(max-width:800px){
+  #about .about{
+    grid-template-columns:1fr!important;
+    gap:28px!important;
+  }
+  #about .about-video-placeholder{
+    width:min(58vw,280px)!important;
+    margin:0 auto!important;
+    grid-row:2!important;
+  }
+  #about .aboutcopy{
+    grid-row:1!important;
+  }
+  #contact .wrap{
+    padding-left:1vw!important;
+    padding-right:1vw!important;
+  }
+  #contact h2{
+    font-size:clamp(10px,3.7vw,18px)!important;
+    letter-spacing:.04em!important;
+  }
+}
+</style>
+
+
+
+
+
+<style id="morao-v9-about-video-scroll">
+/* MORAO copy remains left aligned. */
+#about .aboutcopy p{
+  text-align:left!important;
+}
+
+/* Solid 9:16 guide. */
+#about .about-video-placeholder{
+  background:#4b165f!important;
+  border:0!important;
+  opacity:0!important;
+  transform:translate3d(90px,0,0)!important;
+  will-change:transform,opacity;
+}
+
+/* Scroll-driven entrance: as the section enters, the video travels
+   from right to its final position while fading in. */
+#about.morao-video-in .about-video-placeholder{
+  opacity:1!important;
+  transform:translate3d(0,0,0)!important;
+}
+
+/* Once the section is being left, reverse the movement toward the left. */
+#about.morao-video-out .about-video-placeholder{
+  opacity:0!important;
+  transform:translate3d(-90px,0,0)!important;
+}
+
+/* Smooth interpolation between scroll states. */
+#about .about-video-placeholder{
+  transition:
+    opacity .7s cubic-bezier(.22,.61,.36,1),
+    transform .7s cubic-bezier(.22,.61,.36,1)!important;
+}
+
+@media(max-width:800px){
+  #about .about-video-placeholder{
+    transform:translate3d(60px,0,0)!important;
+  }
+  #about.morao-video-in .about-video-placeholder{
+    transform:translate3d(0,0,0)!important;
+  }
+  #about.morao-video-out .about-video-placeholder{
+    transform:translate3d(-60px,0,0)!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  #about .about-video-placeholder,
+  #about.morao-video-in .about-video-placeholder,
+  #about.morao-video-out .about-video-placeholder{
+    opacity:1!important;
+    transform:none!important;
+    transition:none!important;
+  }
+}
+</style>
+
+<script>
+(function(){
+  function init(){
+    const about=document.getElementById('about');
+    const video=about && about.querySelector('.about-video-placeholder');
+    if(!about || !video) return;
+
+    function update(){
+      const r=about.getBoundingClientRect();
+      const h=window.innerHeight;
+
+      // Section progress from entering the viewport to leaving it.
+      const entering=Math.max(0,Math.min(1,(h-r.top)/(h*.65)));
+      const leaving=Math.max(0,Math.min(1,(h-r.bottom)/(h*.65)));
+
+      about.classList.toggle('morao-video-in', entering>0 && leaving<0.35);
+      about.classList.toggle('morao-video-out', leaving>=0.35);
+
+      // Prevent a flash before the section is reached.
+      if(r.top>=h) {
+        about.classList.remove('morao-video-in','morao-video-out');
+      }
+    }
+
+    update();
+    window.addEventListener('scroll',update,{passive:true});
+    window.addEventListener('resize',update);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',init,{once:true});
+  }else{
+    init();
+  }
+})();
+</script>
+
+<style id="morao-v10-placeholder-transparency">
+/* The 9:16 guide is a solid visual placeholder, but the animation layer itself
+   must remain transparent outside the solid. */
+#about .about-video-placeholder{
+  background:#4b165f!important;
+  border:0!important;
+  box-shadow:none!important;
+  opacity:0!important;
+  overflow:hidden!important;
+}
+#about .about-video-placeholder::after{
+  background:transparent!important;
+  box-shadow:none!important;
+}
+</style>
+
+<style id="morao-v11-contact-large">
+/* CONTACT — substantially larger, with more breathing room */
+#contact{
+  min-height:160vh!important;
+  padding-top:14vh!important;
+  padding-bottom:18vh!important;
+  display:flex!important;
+  align-items:center!important;
+}
+#contact .wrap{
+  min-height:110vh!important;
+  width:100%!important;
+  max-width:none!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:clamp(28px,5vh,70px)!important;
+}
+#contact .reveal:first-child{
+  width:100%!important;
+}
+#contact h2{
+  font-size:clamp(28px,5vw,72px)!important;
+  letter-spacing:.08em!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+#contact .contactcopy{
+  max-width:720px!important;
+  font-size:clamp(14px,1.4vw,20px)!important;
+  line-height:1.35!important;
+}
+#contact .contactlinks{
+  transform:scale(1.15);
+  transform-origin:center;
+}
+@media(max-width:800px){
+  #contact{
+    min-height:125vh!important;
+    padding-top:10vh!important;
+    padding-bottom:12vh!important;
+  }
+  #contact .wrap{
+    min-height:95vh!important;
+    gap:34px!important;
+  }
+  #contact h2{
+    font-size:clamp(22px,7vw,40px)!important;
+    letter-spacing:.05em!important;
+    white-space:nowrap!important;
+  }
+  #contact .contactcopy{
+    max-width:88vw!important;
+    font-size:13px!important;
+  }
+  #contact .contactlinks{
+    transform:scale(1.05);
+  }
+}
+</style>
+
+<style id="morao-v12-contact-title-real">
+/* Contact title: target the actual heading, overriding prior .title rules. */
+#contact .title,
+#contact h2,
+#contact .sectionhead h2,
+#contact .wrap > .reveal:first-child h2{
+  display:block!important;
+  width:100%!important;
+  max-width:none!important;
+  font-family:Montserrat,Arial,sans-serif!important;
+  font-size:clamp(42px,8vw,112px)!important;
+  font-weight:500!important;
+  line-height:1!important;
+  letter-spacing:.08em!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+  transform:none!important;
+}
+@media(max-width:800px){
+  #contact .title,
+  #contact h2,
+  #contact .sectionhead h2,
+  #contact .wrap > .reveal:first-child h2{
+    font-size:clamp(25px,9vw,54px)!important;
+    letter-spacing:.04em!important;
+  }
+}
+</style>
+
+<style id="morao-v13-hero-slogan-footer">
+/* HERO SLOGAN — true footer-like placement */
+.hero{
+  position:relative!important;
+}
+.hero-copy{
+  position:absolute!important;
+  left:50%!important;
+  bottom:-11vh!important;
+  transform:translateX(-50%)!important;
+  width:min(92vw,1000px)!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  font-size:clamp(8px,.65vw,11px)!important;
+  line-height:1.15!important;
+  letter-spacing:.24em!important;
+  text-align:center!important;
+}
+@media(max-width:800px){
+  .hero-copy{
+    bottom:-8vh!important;
+    width:92vw!important;
+    font-size:8px!important;
+    letter-spacing:.15em!important;
+  }
+}
+</style>
+
+<style id="morao-v14-contact-correction">
+/* CONTACT: restore a compact section, only moderately larger than the standard sections. */
+#contact{
+  min-height:110vh!important;
+  height:110vh!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  box-sizing:border-box!important;
+}
+#contact .wrap{
+  min-height:0!important;
+  height:auto!important;
+  width:100%!important;
+  max-width:none!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:28px!important;
+  padding:0 3vw!important;
+  box-sizing:border-box!important;
+}
+#contact h2,
+#contact .title,
+#contact .sectionhead h2,
+#contact .wrap > .reveal:first-child h2{
+  font-size:clamp(22px,2.2vw,30px)!important;
+  font-weight:500!important;
+  line-height:1!important;
+  letter-spacing:.12em!important;
+  white-space:nowrap!important;
+  width:100%!important;
+  max-width:none!important;
+  text-align:center!important;
+}
+#contact .contactcopy{
+  max-width:680px!important;
+  font-size:clamp(13px,1.1vw,16px)!important;
+  line-height:1.3!important;
+}
+#contact .contactlinks{
+  transform:none!important;
+}
+@media(max-width:800px){
+  #contact{
+    min-height:100vh!important;
+    height:100vh!important;
+  }
+  #contact .wrap{
+    gap:22px!important;
+    padding:0 5vw!important;
+  }
+  #contact h2,
+  #contact .title,
+  #contact .sectionhead h2,
+  #contact .wrap > .reveal:first-child h2{
+    font-size:18px!important;
+    letter-spacing:.10em!important;
+  }
+  #contact .contactcopy{
+    max-width:88vw!important;
+    font-size:12px!important;
+  }
+}
+</style>
+
+<style id="morao-v15-contact-smaller">
+/* CONTACT: smaller than V14 while retaining the same visual language. */
+#contact{
+  min-height:88vh!important;
+  height:88vh!important;
+}
+#contact .wrap{
+  min-height:0!important;
+  height:auto!important;
+  gap:22px!important;
+}
+#contact h2,
+#contact .title,
+#contact .sectionhead h2,
+#contact .wrap > .reveal:first-child h2{
+  white-space:nowrap!important;
+  word-break:keep-all!important;
+  overflow:visible!important;
+  font-size:clamp(20px,2.2vw,30px)!important;
+  letter-spacing:.10em!important;
+  line-height:1!important;
+}
+@media(max-width:800px){
+  #contact{
+    min-height:82vh!important;
+    height:82vh!important;
+  }
+  #contact .wrap{
+    gap:18px!important;
+  }
+  #contact h2,
+  #contact .title,
+  #contact .sectionhead h2,
+  #contact .wrap > .reveal:first-child h2{
+    font-size:17px!important;
+    letter-spacing:.07em!important;
+  }
+}
+</style>
+
+<style id="morao-v16-contact-nowrap-hard">
+/* Hard guarantee: one continuous line, no BR can split the title. */
+#contact h2,
+#contact h2 *{
+  white-space:nowrap!important;
+  word-break:normal!important;
+  overflow-wrap:normal!important;
+}
+#contact h2 br{
+  display:none!important;
+}
+#contact h2{
+  display:inline-block!important;
+  width:max-content!important;
+  max-width:none!important;
+  min-width:max-content!important;
+  margin:0 auto!important;
+  padding:0!important;
+  text-align:center!important;
+}
+#contact .reveal:first-child{
+  display:flex!important;
+  justify-content:center!important;
+  align-items:center!important;
+  width:100%!important;
+  min-width:0!important;
+  overflow:visible!important;
+}
+#contact{
+  min-height:88vh!important;
+  height:88vh!important;
+}
+@media(max-width:800px){
+  #contact{
+    min-height:82vh!important;
+    height:82vh!important;
+  }
+  #contact h2{
+    font-size:16px!important;
+    letter-spacing:.055em!important;
+  }
+}
+</style>
+
+<style id="morao-v17-contact-buttons">
+/* Contact buttons: default = white outline/icons, matching Mail. */
+#contact .contactlinks a,
+#contact .contactlinks .contactbtn{
+  background:transparent!important;
+  color:#fff!important;
+  border:1px solid rgba(255,255,255,.9)!important;
+  box-shadow:none!important;
+}
+#contact .contactlinks a svg,
+#contact .contactlinks .contactbtn svg,
+#contact .contactlinks a i,
+#contact .contactlinks .contactbtn i{
+  color:#fff!important;
+  stroke:#fff!important;
+  fill:none!important;
+}
+
+/* Desktop hover = filled white with dark text/icons, matching Instagram. */
+@media (hover:hover) and (pointer:fine){
+  #contact .contactlinks a:hover,
+  #contact .contactlinks .contactbtn:hover{
+    background:#fff!important;
+    color:#111!important;
+    border-color:#fff!important;
+  }
+  #contact .contactlinks a:hover svg,
+  #contact .contactlinks .contactbtn:hover svg,
+  #contact .contactlinks a:hover i,
+  #contact .contactlinks .contactbtn:hover i{
+    color:#111!important;
+    stroke:#111!important;
+  }
+}
+
+/* Mobile tap/focus state = filled white with dark text/icons.
+   :active covers the pressed state; :focus-visible keeps it accessible. */
+@media (hover:none), (pointer:coarse){
+  #contact .contactlinks a:active,
+  #contact .contactlinks .contactbtn:active,
+  #contact .contactlinks a:focus-visible,
+  #contact .contactlinks .contactbtn:focus-visible{
+    background:#fff!important;
+    color:#111!important;
+    border-color:#fff!important;
+  }
+  #contact .contactlinks a:active svg,
+  #contact .contactlinks .contactbtn:active svg,
+  #contact .contactlinks a:focus-visible svg,
+  #contact .contactlinks .contactbtn:focus-visible svg,
+  #contact .contactlinks a:active i,
+  #contact .contactlinks .contactbtn:active i,
+  #contact .contactlinks a:focus-visible i,
+  #contact .contactlinks .contactbtn:focus-visible i{
+    color:#111!important;
+    stroke:#111!important;
+  }
+}
+</style>
+
+<style id="morao-v18-about-bottom-space">
+/* MORAO / ABOUT: add more breathing room below the section content. */
+#about{
+  padding-bottom:clamp(14vh,18vw,24vh)!important;
+}
+#about .about{
+  padding-bottom:clamp(10vh,12vw,18vh)!important;
+}
+@media(max-width:800px){
+  #about{
+    padding-bottom:16vh!important;
+  }
+  #about .about{
+    padding-bottom:12vh!important;
+  }
+}
+</style>
 </head>
 
 <body>
@@ -1912,11 +2766,11 @@ document.addEventListener('DOMContentLoaded', function(){
     </a>
     
 <div class="links">
-<a href="#fotografia">FOTOGRAFÍA</a>
+<a href="#fotografia">FOTO</a>
 <a href="#video">VIDEO</a>
 <a href="#social">SOCIAL</a>
-<a href="#about">ABOUT</a>
-<a href="#contact">CONTACT</a>
+<a href="#about">MORAO</a>
+<a href="#contact">CONTACTO</a>
 </div>
   </div>
 </nav>
@@ -1949,7 +2803,7 @@ document.addEventListener('DOMContentLoaded', function(){
 <section id="fotografia" class="portfolio-section photography-section">
   <div class="photo-scroll">
     <div class="photo-pin">
-      <div class="photo-title-fixed">FOTOGRAFÍA</div>
+      <div class="photo-title-fixed">FOTO</div>
       <div class="photo-stack" id="photoStack">
         <div class="photo-card photo-1"><span>01</span></div>
         <div class="photo-card photo-2"><span>02</span></div>
@@ -1965,11 +2819,9 @@ document.addEventListener('DOMContentLoaded', function(){
 </section>
 
 <section id="video" class="portfolio-section video-section">
-  <div class="wrap portfolio-wrap">
-    <h2 class="portfolio-title reveal">VIDEO</h2>
-  </div>
   <div class="video-sequence" id="videoSequence">
     <div class="media-pin">
+      <div class="media-title-fixed">VIDEO</div>
       <div class="video-card sequence-card" data-index="0"></div>
       <div class="video-card sequence-card" data-index="1"></div>
       <div class="video-card sequence-card" data-index="2"></div>
@@ -1978,11 +2830,9 @@ document.addEventListener('DOMContentLoaded', function(){
 </section>
 
 <section id="social" class="portfolio-section social-section">
-  <div class="wrap portfolio-wrap">
-    <h2 class="portfolio-title reveal">SOCIAL</h2>
-  </div>
   <div class="social-sequence" id="socialSequence">
     <div class="media-pin">
+      <div class="media-title-fixed">SOCIAL</div>
       <div class="social-composition">
         <div class="social-card social-1"></div>
         <div class="social-card social-2"></div>
@@ -1996,10 +2846,11 @@ document.addEventListener('DOMContentLoaded', function(){
   <div class="wrap about">
     <div class="aboutcopy">
       <div class="sectionhead reveal">
-        <h2 class="title">About</h2>
+        <h2 class="title">MORAO</h2>
       </div>
-      <p class="reveal">Morao Media nace de la pasión por la producción audiovisual.</p>
-      <p class="reveal">Música, eventos y contenido con una mirada propia.</p>
+      <p class="reveal">Morao nace de dos amigos apasionados por contar historias y de la certeza de que una buena narrativa puede transformar la forma en que una marca, un artista o un proyecto conecta con las personas.</p>
+      <p class="reveal">Somos una empresa creativa que convierte ideas en experiencias audiovisuales con identidad, intención y emoción. Nos mueve encontrar la historia detrás de cada proyecto y darle una forma que no solo se vea, sino que permanezca.</p>
+      <p class="reveal">Creamos desde la pasión, pensamos desde la estrategia y producimos para que cada imagen tenga algo que decir.</p>
     </div>
   </div>
 </section>
@@ -2007,9 +2858,9 @@ document.addEventListener('DOMContentLoaded', function(){
 <section id="contact" class="contact">
   <div class="wrap">
     <div class="reveal">
-      <h2>¿TIENES<br>UN PROYECTO?</h2>
+      <h2>¿TIENES UN PROYECTO?</h2>
     </div>
-    <p class="contactcopy reveal">Hablemos de lo que necesitas producir.</p>
+    <p class="contactcopy reveal">CUÉNTANOS QUÉ QUIERES HACER REALIDAD.</p>
     <div class="contactlinks reveal">
       <a class="btn icon-btn" href="https://instagram.com/moraomedia" target="_blank" rel="noopener" aria-label="Instagram @moraomedia">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".7" class="fill"/></svg>
