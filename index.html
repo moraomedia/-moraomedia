@@ -2756,6 +2756,63 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 }
 </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style id="morao-v25-photo-real-scale">
+/* The scale is applied in the animation transform itself. */
+.photography-section .photo-card{
+  transform-origin:50% 50%!important;
+}
+</style>
+
+<style id="morao-v26-photo-3x4">
+.photography-section .photo-card{
+  aspect-ratio:3 / 4!important;
+  height:auto!important;
+  overflow:hidden!important;
+  transform-origin:50% 50%!important;
+}
+.photography-section .photo-pin{
+  overflow:visible!important;
+}
+.photography-section .photo-stack{
+  overflow:visible!important;
+}
+</style>
+
+<style id="morao-v27-photo-title-safe-scale">
+.photography-section .photo-card{
+  aspect-ratio:3 / 4!important;
+  transform-origin:50% 50%!important;
+}
+</style>
+
+<style id="morao-v30-photo-assets">
+.photography-section .photo-card img{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  display:block!important;
+  object-fit:cover!important;
+  object-position:center!important;
+}
+.photography-section .photo-card span{
+  position:relative!important;
+  z-index:2!important;
+}
+</style>
 </head>
 
 <body>
@@ -2805,14 +2862,14 @@ document.addEventListener('DOMContentLoaded', function(){
     <div class="photo-pin">
       <div class="photo-title-fixed">FOTO</div>
       <div class="photo-stack" id="photoStack">
-        <div class="photo-card photo-1"><span>01</span></div>
-        <div class="photo-card photo-2"><span>02</span></div>
-        <div class="photo-card photo-3"><span>03</span></div>
-        <div class="photo-card photo-4"><span>04</span></div>
-        <div class="photo-card photo-5"><span>05</span></div>
-        <div class="photo-card photo-6"><span>06</span></div>
-        <div class="photo-card photo-7"><span>07</span></div>
-        <div class="photo-card photo-8"><span>08</span></div>
+        <div class="photo-card photo-1"><img src="assets/foto-01.jpg" alt="Fotografía 1"><span>01</span></div>
+        <div class="photo-card photo-2"><img src="assets/foto-02.jpg" alt="Fotografía 2"><span>02</span></div>
+        <div class="photo-card photo-3"><img src="assets/foto-03.jpg" alt="Fotografía 3"><span>03</span></div>
+        <div class="photo-card photo-4"><img src="assets/foto-04.jpg" alt="Fotografía 4"><span>04</span></div>
+        <div class="photo-card photo-5"><img src="assets/foto-05.jpg" alt="Fotografía 5"><span>05</span></div>
+        <div class="photo-card photo-6"><img src="assets/foto-06.jpg" alt="Fotografía 6"><span>06</span></div>
+        <div class="photo-card photo-7"><img src="assets/foto-07.jpg" alt="Fotografía 7"><span>07</span></div>
+        <div class="photo-card photo-8"><img src="assets/foto-08.jpg" alt="Fotografía 8"><span>08</span></div>
       </div>
     </div>
   </div>
@@ -2920,8 +2977,12 @@ document.addEventListener('DOMContentLoaded', function(){
     const cards = [...photoStack.children];
     const mobile = innerWidth <= 800;
 
+    /*
+      Final footprint: eight 3:4 vertical photos fill almost the full
+      viewport width while remaining centered.
+    */
     const cardH = Math.min(
-      innerHeight * (mobile ? 1.34 : 1.38),
+      innerHeight * (mobile ? 1.34 : 1.40),
       innerWidth * (mobile ? 2.05 : 2.35)
     );
     const cardW = cardH * 0.75;
@@ -2932,18 +2993,19 @@ document.addEventListener('DOMContentLoaded', function(){
       const q = ease(clamp((p - start) / duration));
 
       const startX = innerWidth * 1.30;
-      const step = cardW * (mobile ? 0.105 : 0.10);
+      const step = cardW * (mobile ? 0.145 : 0.135);
       const finalX = (i - 3.5) * step;
       const x = startX + (finalX - startX) * q;
 
       card.style.width = cardW + "px";
       card.style.opacity = q;
+      const compositionScale = mobile ? 1.14 : 1.16;
+      const verticalOffset = mobile ? 58 : 68;
       card.style.transform =
-        `translate3d(calc(-50% + ${x}px), -50%, 0)`;
+        `translate3d(calc(-50% + ${x}px), calc(-50% + ${verticalOffset}px), 0) scale(${compositionScale})`;
       card.style.zIndex = i + 1;
     });
-
-    /*
+/*
       The title belongs to the sticky stage itself:
       it appears with photo 1, stays at exactly the same viewport position
       through the complete 1→8 sequence, then naturally leaves when the
