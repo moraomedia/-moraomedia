@@ -2870,65 +2870,41 @@ document.addEventListener('DOMContentLoaded', function(){
 }
 </style>
 
-<style id="morao-v50-mobile-layout">
+<style id="morao-v52-mobile-photo-clean">
 @media(max-width:800px){
-  .photography-section{
-    position:relative!important;
-    padding:0!important;
-    margin:0!important;
-  }
+  .photography-section{position:relative!important;padding:0!important;margin:0!important}
   .photography-section .photo-scroll{
-    position:relative!important;
-    height:100svh!important;
-    min-height:100svh!important;
-    margin:0!important;
-    padding:0!important;
+    position:relative!important;height:760vh!important;min-height:760vh!important;
+    margin:0!important;padding:0!important;
   }
   .photography-section .photo-pin{
-    position:relative!important;
-    top:auto!important;
-    width:100vw!important;
-    height:100svh!important;
-    min-height:0!important;
-    margin:0!important;
-    padding:0!important;
-    overflow:hidden!important;
+    position:sticky!important;top:var(--header-height,60px)!important;
+    width:100vw!important;height:calc(100svh - var(--header-height,60px))!important;
+    min-height:0!important;margin:0!important;padding:0!important;
+    overflow:hidden!important;display:block!important;z-index:5!important;
   }
   .photography-section .photo-stack{
-    position:absolute!important;
-    inset:0!important;
-    width:100vw!important;
-    height:100%!important;
-    margin:0!important;
-    padding:0!important;
-    overflow:visible!important;
+    position:absolute!important;inset:0!important;width:100vw!important;height:100%!important;
+    margin:0!important;padding:0!important;overflow:visible!important;
   }
   .photography-section .photo-card{
-    position:absolute!important;
-    left:50%!important;
-    top:50%!important;
-    width:56vw!important;
-    max-width:none!important;
-    height:auto!important;
-    aspect-ratio:3/4!important;
-    margin:0!important;
-    padding:0!important;
-    border:0!important;
-    overflow:hidden!important;
-    transform-origin:center center!important;
+    position:absolute!important;left:50%!important;top:50%!important;
+    width:56vw!important;max-width:none!important;height:auto!important;
+    aspect-ratio:3/4!important;margin:0!important;padding:0!important;border:0!important;
+    overflow:hidden!important;background:#30134b!important;transform-origin:center!important;
+    backface-visibility:hidden!important;
   }
   .photography-section .photo-card img{
-    position:absolute!important;
-    inset:0!important;
-    width:100%!important;
-    height:100%!important;
-    object-fit:cover!important;
+    position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+    max-width:none!important;object-fit:cover!important;object-position:center!important;display:block!important;
   }
 }
 @media(max-width:500px){
+  .photography-section .photo-scroll{height:820vh!important;min-height:820vh!important}
   .photography-section .photo-card{width:54vw!important}
 }
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script><script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script></head>
+</style>
+</head>
 
 <body>
 <nav class="nav">
@@ -3102,51 +3078,56 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   function updatePhotography() {
-    if(innerWidth <= 800) return;
     if (!photoScroll || !photoStack) return;
 
-    const p = sectionProgress(photoScroll);
     const cards = [...photoStack.children];
     const mobile = innerWidth <= 800;
+    const p = sectionProgress(photoScroll);
 
-    /*
-      Final footprint: eight 3:4 vertical photos fill almost the full
-      viewport width while remaining centered.
-    */
-    const cardH = Math.min(
-      innerHeight * (mobile ? 1.34 : 1.40),
-      innerWidth * (mobile ? 2.05 : 2.35)
-    );
-    const cardW = cardH * 0.75;
+    if (mobile) {
+      const cardW = innerWidth <= 500 ? innerWidth * 0.54 : innerWidth * 0.56;
+      const cardH = cardW / 0.75;
 
-    cards.forEach((card, i) => {
-      const start = i === 0 ? 0 : i * 0.082;
-      const duration = i === 0 ? 0 : 0.20;
-      const q = i === 0 ? 1 : ease(clamp((p - start) / duration));
+      cards.forEach((card, i) => {
+        const start = i === 0 ? 0 : 0.08 + (i - 1) * 0.12;
+        const duration = i === 0 ? 0 : 0.16;
+        const q = i === 0 ? 1 : ease(clamp((p - start) / duration));
 
-      const startX = innerWidth * 1.30;
-      const step = cardW * (mobile ? 0.145 : 0.135);
-      const finalX = (i - 3.5) * step;
-      const x = startX + (finalX - startX) * q;
+        const entryX = innerWidth * 0.95;
+        const x = i === 0 ? 0 : entryX * (1 - q);
 
-      card.style.width = cardW + "px";
-      card.style.opacity = q;
-      const compositionScale = mobile ? 1.14 : 1.16;
-      const verticalOffset = mobile ? 58 : 68;
-      card.style.transform =
-        `translate3d(calc(-50% + ${x}px), calc(-50% + ${verticalOffset}px), 0) scale(${compositionScale})`;
-      card.style.zIndex = i + 1;
-    });
-/*
-      The title belongs to the sticky stage itself:
-      it appears with photo 1, stays at exactly the same viewport position
-      through the complete 1→8 sequence, then naturally leaves when the
-      sticky stage ends.
-    */
-    const title = document.querySelector('.photo-title-fixed');
-    if (title) {
-      title.style.opacity = p < 0.98 ? 1 : 1;
+        card.style.width = cardW + "px";
+        card.style.height = cardH + "px";
+        card.style.opacity = q;
+        card.style.transform =
+          `translate3d(calc(-50% + ${x}px),calc(-50% + 22px),0)`;
+        card.style.zIndex = i + 1;
+      });
+    } else {
+      const cardH = Math.min(innerHeight * 1.40, innerWidth * 2.35);
+      const cardW = cardH * 0.75;
+
+      cards.forEach((card, i) => {
+        const start = i === 0 ? 0 : i * 0.082;
+        const duration = i === 0 ? 0 : 0.20;
+        const q = i === 0 ? 1 : ease(clamp((p - start) / duration));
+
+        const startX = innerWidth * 1.30;
+        const step = cardW * 0.135;
+        const finalX = (i - 3.5) * step;
+        const x = startX + (finalX - startX) * q;
+
+        card.style.width = cardW + "px";
+        card.style.height = cardH + "px";
+        card.style.opacity = q;
+        card.style.transform =
+          `translate3d(calc(-50% + ${x}px),calc(-50% + 68px),0) scale(1.16)`;
+        card.style.zIndex = i + 1;
+      });
     }
+
+    const title = document.querySelector('.photo-title-fixed');
+    if (title) title.style.opacity = 1;
   }
 
   function updateVideo() {
@@ -3213,92 +3194,5 @@ document.addEventListener('DOMContentLoaded', function(){
 })();
 </script>
 
-
-<script id="morao-v50-mobile-photo">
-(function(){
-  let ctx=null;
-  let timer=null;
-
-  function setup(){
-    if(window.innerWidth>800 || !window.gsap || !window.ScrollTrigger) return;
-
-    window.gsap.registerPlugin(window.ScrollTrigger);
-
-    if(ctx) ctx.revert();
-
-    const section=document.querySelector('.photography-section');
-    const stage=section && section.querySelector('.photo-scroll');
-    const pin=section && section.querySelector('.photo-pin');
-    const cards=section ? [...section.querySelectorAll('.photo-card')] : [];
-
-    if(!section || !stage || !pin || cards.length!==8) return;
-
-    ctx=window.gsap.context(()=>{
-      const w=window.innerWidth;
-      const small=w<=500;
-      const cardW=w*(small?0.54:0.56);
-      const cardH=cardW/0.75;
-      const baseY=small?20:24;
-
-      cards.forEach((card,i)=>{
-        window.gsap.set(card,{
-          width:cardW,
-          height:cardH,
-          xPercent:-50,
-          yPercent:-50,
-          x:i===0?0:w*0.95,
-          y:baseY,
-          opacity:i===0?1:0,
-          scale:1,
-          zIndex:i+1
-        });
-      });
-
-      /*
-        The stage itself is one viewport. ScrollTrigger pins the pin while
-        the timeline consumes the scroll distance. This is the important
-        responsive behavior: no body lock, no second scroll listener.
-      */
-      const tl=window.gsap.timeline({
-        scrollTrigger:{
-          trigger:stage,
-          start:'top top',
-          end:'+=5600',
-          pin:pin,
-          pinSpacing:true,
-          scrub:1,
-          anticipatePin:1,
-          invalidateOnRefresh:true
-        }
-      });
-
-      cards.slice(1).forEach((card,i)=>{
-        tl.to(card,{
-          x:0,
-          opacity:1,
-          duration:1,
-          ease:'power2.inOut'
-        }, i);
-      });
-    },section);
-
-    window.ScrollTrigger.refresh();
-  }
-
-  function rebuild(){
-    clearTimeout(timer);
-    timer=setTimeout(setup,180);
-  }
-
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',setup,{once:true});
-  }else{
-    setup();
-  }
-
-  window.addEventListener('resize',rebuild);
-  window.addEventListener('orientationchange',rebuild);
-})();
-</script>
 </body>
 </html>
