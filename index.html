@@ -2914,39 +2914,90 @@ document.addEventListener('DOMContentLoaded', function(){
 /* Resize-safe header height. */
 </style>
 
+<style id="morao-v105-fixed-title-gap-box">
+/*
+  FOTO ↔ COMPOSITION LOCK
+  The title keeps its existing position.
+  JS sets photo-stack top = title bottom + 16px.
+  Nothing in responsive CSS is allowed to vertically reposition the stack.
+*/
+.photography-section .photo-stack{
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  width:100vw!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:visible!important;
+  transform:none!important;
+}
 
+.photography-section .photo-card{
+  position:absolute!important;
+  left:50%!important;
+  top:0!important;
+  margin:0!important;
+  padding:0!important;
+  aspect-ratio:3/4!important;
+  border:0!important;
+  overflow:hidden!important;
+  transform-origin:center top!important;
+}
 
+.photography-section .photo-card img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+}
+</style>
 
+<style id="morao-v106-photo-footers">
+/* PHOTO CAPTIONS — fixed requested ::after labels */
+.photography-section .photo-card::after{
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  bottom:0!important;
+  z-index:10!important;
+  display:block!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  padding:11px 14px 13px!important;
+  color:#fff!important;
+  background:linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,0))!important;
+  font-family:Montserrat,Arial,sans-serif!important;
+  font-size:10px!important;
+  font-weight:500!important;
+  line-height:1.2!important;
+  letter-spacing:.08em!important;
+  text-align:left!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  content:""!important;
+}
+.photography-section .photo-1::after{content:"ESTÉREO PICNIC - DJO"!important;}
+.photography-section .photo-2::after{content:"FEID"!important;}
+.photography-section .photo-3::after{content:"LIMP BIZKIT"!important;}
+.photography-section .photo-4::after{content:"LUIS ALFONSO"!important;}
+.photography-section .photo-5::after{content:"J BALVIN"!important;}
+.photography-section .photo-6::after{content:"CORDILLERA - LOS CALIGARIS"!important;}
+.photography-section .photo-7::after{content:"WEDDING SHOOTING"!important;}
+.photography-section .photo-8::after{content:"RYAN CASTRO"!important;}
 
-
-
-<style id="morao-v77-mobile-background-restore">
 @media(max-width:800px){
-  /*
-    Restore the same visual background used by the site body on the entire
-    photography scene. The scene itself stays transparent to the page's
-    content, but we repeat the gradient so the sticky stage does not reveal
-    a flat black canvas.
-  */
-  .photography-section,
-  .photography-section .photo-scroll,
-  .photography-section .photo-pin{
-    background:
-      radial-gradient(ellipse at 18% 12%,rgba(139,61,255,.22),transparent 30%),
-      radial-gradient(ellipse at 82% 40%,rgba(195,77,255,.13),transparent 28%),
-      linear-gradient(135deg,#08070b 0%,#110b17 48%,#07060a 100%)!important;
+  .photography-section .photo-card::after{
+    padding:9px 10px 11px!important;
+    font-size:9px!important;
+    letter-spacing:.06em!important;
   }
+}
+</style>
 
-  .photography-section .photo-scroll{
-    height:100svh!important;
-    min-height:100svh!important;
-  }
-
-  .photography-section .photo-pin{
-    height:100svh!important;
-    min-height:0!important;
-    overflow:hidden!important;
-  }
+<style id="morao-v107-photo-footer-fade">
+.photography-section .photo-card::after{
+  opacity:var(--caption-opacity,1)!important;
+  transition:opacity .15s linear!important;
 }
 </style>
 </head>
@@ -3123,51 +3174,137 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   function updatePhotography() {
-    if(innerWidth<=800) return;
     if (!photoScroll || !photoStack) return;
 
     const p = sectionProgress(photoScroll);
     const cards = [...photoStack.children];
+    const cardProgress = new Array(cards.length).fill(0);
     const mobile = innerWidth <= 800;
 
-    /*
-      Final footprint: eight 3:4 vertical photos fill almost the full
-      viewport width while remaining centered.
-    */
-    const cardH = Math.min(
-      innerHeight * (mobile ? 1.34 : 1.40),
-      innerWidth * (mobile ? 2.05 : 2.35)
-    );
-    const cardW = cardH * 0.75;
-
-    cards.forEach((card, i) => {
-      const start = i === 0 ? 0 : i * 0.082;
-      const duration = i === 0 ? 0 : 0.20;
-      const q = i === 0 ? 1 : ease(clamp((p - start) / duration));
-
-      const startX = innerWidth * 1.30;
-      const step = cardW * (mobile ? 0.145 : 0.135);
-      const finalX = (i - 3.5) * step;
-      const x = startX + (finalX - startX) * q;
-
-      card.style.width = cardW + "px";
-      card.style.opacity = q;
-      const compositionScale = mobile ? 1.14 : 1.16;
-      const verticalOffset = mobile ? 58 : 68;
-      card.style.transform =
-        `translate3d(calc(-50% + ${x}px), calc(-50% + ${verticalOffset}px), 0) scale(${compositionScale})`;
-      card.style.zIndex = i + 1;
-    });
-/*
-      The title belongs to the sticky stage itself:
-      it appears with photo 1, stays at exactly the same viewport position
-      through the complete 1→8 sequence, then naturally leaves when the
-      sticky stage ends.
-    */
+    const pin = document.querySelector('.photo-pin');
     const title = document.querySelector('.photo-title-fixed');
-    if (title) {
-      title.style.opacity = p < 0.98 ? 1 : 1;
+
+    if (!pin || !title) return;
+
+    const pinRect = pin.getBoundingClientRect();
+    const titleRect = title.getBoundingClientRect();
+
+    /* Keep FOTO in its existing position and use a small fixed gap. */
+    const gap = 16;
+    const titleBottom = titleRect.bottom - pinRect.top;
+
+    if (!mobile) {
+      /*
+        DESKTOP = HORIZONTAL COMPOSITION
+        All eight portrait photos form the wide horizontal composition.
+        The responsive change affects their scale, never their fundamental
+        horizontal arrangement.
+      */
+      const scale = 1.16;
+      const cardH = Math.min(
+        innerHeight * 1.40,
+        innerWidth * 2.35
+      );
+      const cardW = cardH * 0.75;
+      const visualH = cardH * scale;
+
+      const stackTop = titleBottom + gap;
+      photoStack.style.top = stackTop + 'px';
+      photoStack.style.bottom = 'auto';
+      photoStack.style.height = visualH + 'px';
+
+      cards.forEach((card, i) => {
+        const start = i === 0 ? 0 : i * 0.082;
+        const duration = i === 0 ? 0 : 0.20;
+        const q = i === 0 ? 1 : ease(clamp((p - start) / duration));
+        cardProgress[i] = q;
+
+        const startX = innerWidth * 1.30;
+        const step = cardW * 0.135;
+        const finalX = (i - 3.5) * step;
+        const x = startX + (finalX - startX) * q;
+
+        card.style.width = cardW + 'px';
+        card.style.height = cardH + 'px';
+        card.style.opacity = q;
+        card.style.transformOrigin = 'center top';
+        card.style.transform =
+          `translate3d(calc(-50% + ${x}px),0,0) scale(${scale})`;
+        card.style.zIndex = i + 1;
+      });
+
+      /* Absolutely prevent the mobile renderer from running on desktop. */
+      cards.forEach((card, i) => {
+        card.style.writingMode = 'horizontal-tb';
+      });
+
+    } else {
+      /*
+        MOBILE = VERTICAL STACK
+        First photo is visible. Each next photo rises from below and lands
+        exactly on top of the previous one.
+      */
+      const widthCap = innerWidth <= 500
+        ? innerWidth * 0.50
+        : innerWidth * 0.52;
+
+      const pinH = pin.clientHeight || innerHeight;
+      const cardH = Math.min(
+        widthCap / 0.75,
+        pinH * 0.64
+      );
+      const cardW = cardH * 0.75;
+
+      const stackTop = titleBottom + gap;
+      photoStack.style.top = stackTop + 'px';
+      photoStack.style.bottom = 'auto';
+      photoStack.style.height = cardH + 'px';
+
+      const entryY = pinH + cardH;
+
+      cards.forEach((card, i) => {
+        const start = i === 0 ? 0 : 0.07 + (i - 1) * 0.12;
+        const duration = i === 0 ? 0 : 0.16;
+        const q = i === 0 ? 1 : ease(clamp((p - start) / duration));
+        cardProgress[i] = q;
+
+        const y = i === 0 ? 0 : entryY * (1 - q);
+
+        card.style.width = cardW + 'px';
+        card.style.height = cardH + 'px';
+        card.style.opacity = q;
+        card.style.transformOrigin = 'center top';
+        card.style.transform =
+          `translate3d(-50%,${y}px,0)`;
+        card.style.zIndex = i + 1;
+      });
     }
+
+    /*
+      FOOTER FADE
+      A footer fades as soon as a later photo is visibly layered over it.
+    */
+    cards.forEach((card, i) => {
+      let above = 0;
+      for (let j = i + 1; j < cards.length; j++) {
+        above = Math.max(above, cardProgress[j] || 0);
+      }
+      /*
+        Keep each footer visible a little longer. The fade does not begin
+        until the next photo is about 35% into its entrance, then fades out
+        over the remaining 65% of that transition.
+      */
+      const fadeStart = 0.35;
+      const fadeProgress = Math.min(
+        1,
+        Math.max(0, (above - fadeStart) / (1 - fadeStart))
+      );
+
+      card.style.setProperty(
+        '--caption-opacity',
+        (1 - fadeProgress).toFixed(3)
+      );
+    });
   }
 
   function updateVideo() {
@@ -3248,367 +3385,6 @@ document.addEventListener('DOMContentLoaded', function(){
   measure();
   window.addEventListener('resize',measure,{passive:true});
   window.addEventListener('orientationchange',()=>setTimeout(measure,100),{passive:true});
-})();
-</script>
-
-
-
-<script id="morao-v76-mobile-photo-lock">
-(function(){
-  const isMobile=()=>window.innerWidth<=800;
-  const photoSection=document.querySelector('.photography-section');
-  const photoScroll=document.querySelector('.photography-section .photo-scroll');
-  const cards=[...document.querySelectorAll('.photography-section .photo-card')];
-
-  if(!photoSection || !photoScroll || cards.length!==8) return;
-
-  let sectionActive=false;
-  let locked=false;
-  let progress=0;
-  let lastTouchY=null;
-
-  const clamp=(v,a=0,b=1)=>Math.min(Math.max(v,a),b);
-  const ease=t=>t*t*(3-2*t);
-
-  function render(){
-    if(!isMobile()) return;
-
-    const w=window.innerWidth*(window.innerWidth<=500?.54:.56);
-    const h=w/.75;
-    const entry=window.innerWidth*.92;
-    const y=window.innerWidth<=500?16:22;
-
-    cards.forEach((card,i)=>{
-      const start=i===0?0:.08+(i-1)*.12;
-      const dur=i===0?0:.16;
-      const raw=i===0?1:clamp((progress-start)/dur);
-      const q=i===0?1:ease(raw);
-      const x=i===0?0:entry*(1-q);
-
-      card.style.width=w+'px';
-      card.style.height=h+'px';
-      card.style.opacity=q;
-      card.style.transform=
-        `translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0)`;
-      card.style.zIndex=i+1;
-    });
-  }
-
-  function setSectionActive(){
-    if(!isMobile()) return;
-    const r=photoSection.getBoundingClientRect();
-    /*
-      Active when FOTO is the dominant viewport section.
-      This avoids relying on a single exact pixel position.
-    */
-    const visibleTop=Math.max(0,r.top);
-    const visibleBottom=Math.min(window.innerHeight,r.bottom);
-    const visible=Math.max(0,visibleBottom-visibleTop);
-    sectionActive=visible>window.innerHeight*0.62;
-  }
-
-  const observer=new IntersectionObserver(entries=>{
-    for(const entry of entries){
-      if(entry.target===photoSection){
-        sectionActive=entry.isIntersecting && entry.intersectionRatio>0.62;
-      }
-    }
-  },{threshold:[0,.35,.62,.8,1]});
-
-  observer.observe(photoSection);
-
-  function begin(){
-    locked=true;
-    progress=0;
-    render();
-  }
-
-  function finishForward(){
-    progress=1;
-    render();
-    locked=false;
-    /* The event that completed the sequence remains consumed.
-       The next natural swipe/wheel continues into Video. */
-  }
-
-  function finishBackward(){
-    progress=0;
-    render();
-    locked=false;
-  }
-
-  function advance(delta){
-    progress=clamp(progress+delta);
-    render();
-
-    if(progress>=1){
-      finishForward();
-    }else if(progress<=0){
-      finishBackward();
-    }
-  }
-
-  function onWheel(e){
-    if(!isMobile()) return;
-
-    if(locked){
-      e.preventDefault();
-      advance(e.deltaY/2500);
-      return;
-    }
-
-    setSectionActive();
-
-    if(sectionActive && e.deltaY>0){
-      e.preventDefault();
-      begin();
-      advance(e.deltaY/2500);
-    }
-  }
-
-  function onTouchStart(e){
-    if(!isMobile() || !e.touches.length) return;
-    lastTouchY=e.touches[0].clientY;
-  }
-
-  function onTouchMove(e){
-    if(!isMobile() || lastTouchY===null) return;
-
-    const current=e.touches[0].clientY;
-    const dy=lastTouchY-current;
-    lastTouchY=current;
-
-    if(locked){
-      e.preventDefault();
-      advance(dy/1450);
-      return;
-    }
-
-    setSectionActive();
-    if(sectionActive && dy>0){
-      e.preventDefault();
-      begin();
-      advance(dy/1450);
-    }
-  }
-
-  function onTouchEnd(){
-    lastTouchY=null;
-  }
-
-  function reset(){
-    if(!isMobile()){
-      locked=false;
-      progress=0;
-      return;
-    }
-    setSectionActive();
-    if(!locked) render();
-  }
-
-  render();
-  setSectionActive();
-
-  window.addEventListener('wheel',onWheel,{passive:false});
-  window.addEventListener('touchstart',onTouchStart,{passive:true});
-  window.addEventListener('touchmove',onTouchMove,{passive:false});
-  window.addEventListener('touchend',onTouchEnd,{passive:true});
-  window.addEventListener('scroll',setSectionActive,{passive:true});
-  window.addEventListener('resize',reset,{passive:true});
-  window.addEventListener('orientationchange',()=>setTimeout(reset,120),{passive:true});
-})();
-</script>
-
-
-
-<script id="morao-v78-mobile-photo-lock-complete">
-(function(){
-  const isMobile=()=>window.innerWidth<=800;
-  const section=document.querySelector('.photography-section');
-  const stage=section && section.querySelector('.photo-scroll');
-  const cards=section ? [...section.querySelectorAll('.photo-card')] : [];
-  if(!section || !stage || cards.length!==8) return;
-
-  let active=false;
-  let completed=false;
-  let progress=0;
-  let lastTouchY=null;
-
-  const clamp=(v,a=0,b=1)=>Math.min(Math.max(v,a),b);
-  const ease=t=>t*t*(3-2*t);
-
-  function render(){
-    if(!isMobile()) return;
-
-    const w=window.innerWidth*(window.innerWidth<=500?.54:.56);
-    const h=w/.75;
-    const entry=window.innerWidth*.92;
-    const y=window.innerWidth<=500?16:22;
-
-    cards.forEach((card,i)=>{
-      const start=i===0?0:.08+(i-1)*.12;
-      const duration=i===0?0:.16;
-      const q=i===0?1:ease(clamp((progress-start)/duration));
-      const x=i===0?0:entry*(1-q);
-
-      card.style.width=w+'px';
-      card.style.height=h+'px';
-      card.style.opacity=q;
-      card.style.transform=
-        `translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0)`;
-      card.style.zIndex=i+1;
-    });
-  }
-
-  function stageIsCentered(){
-    if(!isMobile()) return false;
-    const r=stage.getBoundingClientRect();
-    const header=parseFloat(
-      getComputedStyle(document.documentElement)
-        .getPropertyValue('--header-height')
-    ) || 60;
-
-    return r.top<=header+8 && r.bottom>=window.innerHeight-20;
-  }
-
-  function beginForward(){
-    active=true;
-    completed=false;
-    progress=0;
-    render();
-  }
-
-  function beginReverse(){
-    active=true;
-    completed=false;
-    progress=1;
-    render();
-  }
-
-  function finishForward(){
-    progress=1;
-    completed=true;
-    active=false;
-    render();
-  }
-
-  function finishReverse(){
-    progress=0;
-    completed=false;
-    active=false;
-    render();
-  }
-
-  function step(delta){
-    progress=clamp(progress+delta);
-    render();
-
-    if(progress>=1){
-      finishForward();
-    }else if(progress<=0){
-      finishReverse();
-    }
-  }
-
-  function wheel(e){
-    if(!isMobile()) return;
-
-    if(active){
-      e.preventDefault();
-      step(e.deltaY/2500);
-      return;
-    }
-
-    /*
-      CRITICAL:
-      Once photo 8 is complete, downward scrolling must be passed through
-      untouched so the document can continue to VIDEO.
-    */
-    if(completed && e.deltaY>0){
-      return;
-    }
-
-    if(stageIsCentered()){
-      if(e.deltaY>0){
-        e.preventDefault();
-        beginForward();
-        step(e.deltaY/2500);
-        return;
-      }
-
-      if(e.deltaY<0 && completed){
-        e.preventDefault();
-        beginReverse();
-        step(e.deltaY/2500);
-      }
-    }
-  }
-
-  function touchStart(e){
-    if(!isMobile() || !e.touches.length) return;
-    lastTouchY=e.touches[0].clientY;
-  }
-
-  function touchMove(e){
-    if(!isMobile() || lastTouchY===null) return;
-
-    const y=e.touches[0].clientY;
-    const dy=lastTouchY-y;
-    lastTouchY=y;
-
-    if(active){
-      e.preventDefault();
-      step(dy/1450);
-      return;
-    }
-
-    /*
-      After photo 8, downward touch is passed through to native page scroll.
-      Upward touch on the completed scene reopens the sequence in reverse.
-    */
-    if(completed && dy>0){
-      return;
-    }
-
-    if(stageIsCentered()){
-      if(dy>0){
-        e.preventDefault();
-        beginForward();
-        step(dy/1450);
-      }else if(dy<0 && completed){
-        e.preventDefault();
-        beginReverse();
-        step(dy/1450);
-      }
-    }
-  }
-
-  function touchEnd(){
-    lastTouchY=null;
-  }
-
-  function reset(){
-    if(!isMobile()){
-      active=false;
-      completed=false;
-      progress=0;
-      return;
-    }
-    if(!active) render();
-  }
-
-  render();
-
-  window.addEventListener('wheel',wheel,{passive:false});
-  window.addEventListener('touchstart',touchStart,{passive:true});
-  window.addEventListener('touchmove',touchMove,{passive:false});
-  window.addEventListener('touchend',touchEnd,{passive:true});
-  window.addEventListener('resize',reset,{passive:true});
-  window.addEventListener(
-    'orientationchange',
-    ()=>setTimeout(reset,120),
-    {passive:true}
-  );
 })();
 </script>
 </body>
