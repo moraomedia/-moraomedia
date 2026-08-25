@@ -3012,6 +3012,35 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 }
 </style>
+
+<style id="morao-client-strip-final">
+.client-strip{
+  width:min(1080px,100%)!important;
+  height:100px!important;
+  margin:0 auto!important;
+  padding:0!important;
+  overflow:hidden!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+}
+.client-strip img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  object-fit:contain!important;
+  object-position:center!important;
+}
+@media(max-width:800px){
+  .client-strip{
+    width:100%!important;
+    height:auto!important;
+    aspect-ratio:1080/100!important;
+  }
+}
+</style>
 </head>
 
 <body>
