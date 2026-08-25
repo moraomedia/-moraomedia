@@ -3001,15 +3001,14 @@ document.addEventListener('DOMContentLoaded', function(){
 }
 </style>
 
-<style id="morao-v111-mobile-photo-gate">
+<style id="morao-v112-mobile-photo-state-lock">
 @media(max-width:800px){
-  /*
-    Gate only the scroll handoff. The photo animation itself remains native
-    section-progress driven. While PHOTO is not complete, the page cannot
-    leave the section.
-  */
-  body.morao-photo-gate{
+  body.morao-photo-state-lock{
     overscroll-behavior:none!important;
+  }
+  .photography-section .photo-pin{
+    position:sticky!important;
+    top:0!important;
   }
 }
 </style>
@@ -3189,7 +3188,9 @@ document.addEventListener('DOMContentLoaded', function(){
   function updatePhotography() {
     if (!photoScroll || !photoStack) return;
 
-    const p = sectionProgress(photoScroll);
+    const p = (window.moraoPhotoLocked && Number.isFinite(window.moraoPhotoVirtualProgress))
+      ? window.moraoPhotoVirtualProgress
+      : sectionProgress(photoScroll);
     const cards = [...photoStack.children];
     const cardProgress = new Array(cards.length).fill(0);
     const mobile = innerWidth <= 800;
@@ -3401,158 +3402,156 @@ document.addEventListener('DOMContentLoaded', function(){
 })();
 </script>
 
-<script id="morao-v111-mobile-photo-gate">
+<script id="morao-v112-mobile-photo-state-lock">
 (function(){
   const isMobile=()=>window.innerWidth<=800;
   const section=document.querySelector('.photography-section');
   const stage=section && section.querySelector('.photo-scroll');
   if(!section || !stage) return;
 
-  let gate=false;
+  let locked=false;
   let completed=false;
-  let lastY=null;
+  let virtualProgress=0;
+  let touchLastY=null;
+  let lockScrollY=0;
 
-  function progress(){
-    const r=stage.getBoundingClientRect();
-    return Math.min(1,Math.max(0,
-      -r.top / Math.max(stage.offsetHeight-window.innerHeight,1)
-    ));
+  window.moraoPhotoLocked=false;
+  window.moraoPhotoVirtualProgress=0;
+
+  function getProgressFromScroll(){
+    const distance=Math.max(stage.offsetHeight-window.innerHeight,1);
+    return Math.min(1,Math.max(0,-stage.getBoundingClientRect().top/distance));
   }
 
-  function stageDominant(){
+  function isAtPhotoStart(){
     if(!isMobile()) return false;
     const r=stage.getBoundingClientRect();
-    return r.top <= 8 && r.bottom >= window.innerHeight-8;
+    return r.top>=-4 && r.top<=12;
   }
 
-  function lock(){
-    gate=true;
-    completed=false;
-    document.body.classList.add('morao-photo-gate');
-  }
-
-  function release(){
-    gate=false;
-    completed=true;
-    document.body.classList.remove('morao-photo-gate');
-  }
-
-  function onWheel(e){
-    if(!isMobile()) return;
+  function renderProgress(p){
+    virtualProgress=Math.max(0,Math.min(1,p));
+    window.moraoPhotoVirtualProgress=virtualProgress;
 
     /*
-      Once photo 8 is reached, all later downward scroll is native again.
+      The site's existing scroll listener will call updatePhotography().
+      Calling it explicitly here makes the animation react immediately to
+      the virtual state even though the document itself is not scrolling.
     */
-    if(completed && e.deltaY>0){
-      return;
-    }
+    window.dispatchEvent(new Event('scroll'));
+  }
 
-    if(gate){
-      e.preventDefault();
+  function enterLock(initialDelta){
+    locked=true;
+    completed=false;
+    lockScrollY=window.scrollY;
+    document.body.classList.add('morao-photo-state-lock');
 
-      /*
-        Let the page's normal scroll renderer advance. We only prevent the
-        browser from leaving the section; actual progression is still tied
-        to scroll position by updatePhotography().
-      */
-      const next=Math.max(0,Math.min(
-        stage.offsetHeight-window.innerHeight,
-        window.scrollY + e.deltaY
-      ));
-      window.scrollTo(0,next);
+    virtualProgress=0;
+    window.moraoPhotoLocked=true;
+    window.moraoPhotoVirtualProgress=0;
 
-      if(progress()>=0.999){
-        release();
-      }
-      return;
-    }
+    renderProgress(initialDelta);
+  }
 
-    if(e.deltaY>0 && stageDominant() && !completed){
-      lock();
-      e.preventDefault();
+  function leaveForward(){
+    virtualProgress=1;
+    window.moraoPhotoVirtualProgress=1;
+    window.moraoPhotoLocked=true;
+    window.dispatchEvent(new Event('scroll'));
 
-      const next=Math.max(0,Math.min(
-        stage.offsetHeight-window.innerHeight,
-        window.scrollY + e.deltaY
-      ));
-      window.scrollTo(0,next);
+    completed=true;
+    locked=false;
+    window.moraoPhotoLocked=false;
+    document.body.classList.remove('morao-photo-state-lock');
 
-      if(progress()>=0.999){
-        release();
-      }
+    /*
+      Jump only after PHOTO is fully complete. This is the handoff point:
+      the next native scroll event can continue into VIDEO.
+    */
+    const endY=lockScrollY + Math.max(stage.offsetHeight-window.innerHeight,0) + 2;
+    window.scrollTo(0,endY);
+  }
+
+  function leaveBackward(){
+    locked=false;
+    completed=false;
+    virtualProgress=0;
+    window.moraoPhotoLocked=false;
+    window.moraoPhotoVirtualProgress=0;
+    document.body.classList.remove('morao-photo-state-lock');
+  }
+
+  function step(delta){
+    const next=Math.max(0,Math.min(1,virtualProgress+delta));
+    renderProgress(next);
+
+    if(next>=1){
+      leaveForward();
+    }else if(next<=0 && delta<0){
+      leaveBackward();
+      window.scrollTo(0,Math.max(0,lockScrollY-2));
     }
   }
 
-  function onTouchStart(e){
+  function wheel(e){
+    if(!isMobile()) return;
+
+    if(locked){
+      e.preventDefault();
+      step(e.deltaY/2600);
+      return;
+    }
+
+    if(!completed && e.deltaY>0 && isAtPhotoStart()){
+      e.preventDefault();
+      enterLock(e.deltaY/2600);
+    }
+  }
+
+  function touchStart(e){
     if(!isMobile() || !e.touches.length) return;
-    lastY=e.touches[0].clientY;
+    touchLastY=e.touches[0].clientY;
   }
 
-  function onTouchMove(e){
-    if(!isMobile() || lastY===null) return;
+  function touchMove(e){
+    if(!isMobile() || touchLastY===null) return;
 
     const y=e.touches[0].clientY;
-    const dy=lastY-y;
-    lastY=y;
+    const dy=touchLastY-y;
+    touchLastY=y;
 
-    if(completed && dy>0) return;
-
-    if(gate){
+    if(locked){
       e.preventDefault();
-      const delta=dy;
-      const next=Math.max(0,Math.min(
-        stage.offsetHeight-window.innerHeight,
-        window.scrollY + delta
-      ));
-      window.scrollTo(0,next);
-
-      if(progress()>=0.999){
-        release();
-      }
+      step(dy/1450);
       return;
     }
 
-    if(dy>0 && stageDominant() && !completed){
-      gate=true;
-      document.body.classList.add('morao-photo-gate');
+    if(!completed && dy>0 && isAtPhotoStart()){
       e.preventDefault();
-
-      const next=Math.max(0,Math.min(
-        stage.offsetHeight-window.innerHeight,
-        window.scrollY + dy
-      ));
-      window.scrollTo(0,next);
-
-      if(progress()>=0.999){
-        release();
-      }
+      enterLock(dy/1450);
     }
   }
 
-  function onTouchEnd(){
-    lastY=null;
-  }
-
-  function onScroll(){
-    if(!isMobile()) return;
-    if(gate && progress()>=0.999){
-      release();
-    }
+  function touchEnd(){
+    touchLastY=null;
   }
 
   function reset(){
-    if(!isMobile()){
-      gate=false;
+    if(window.innerWidth>800){
+      locked=false;
       completed=false;
-      document.body.classList.remove('morao-photo-gate');
+      virtualProgress=0;
+      window.moraoPhotoLocked=false;
+      window.moraoPhotoVirtualProgress=0;
+      document.body.classList.remove('morao-photo-state-lock');
     }
   }
 
-  window.addEventListener('wheel',onWheel,{passive:false});
-  window.addEventListener('touchstart',onTouchStart,{passive:true});
-  window.addEventListener('touchmove',onTouchMove,{passive:false});
-  window.addEventListener('touchend',onTouchEnd,{passive:true});
-  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('wheel',wheel,{passive:false});
+  window.addEventListener('touchstart',touchStart,{passive:true});
+  window.addEventListener('touchmove',touchMove,{passive:false});
+  window.addEventListener('touchend',touchEnd,{passive:true});
   window.addEventListener('resize',reset,{passive:true});
   window.addEventListener('orientationchange',()=>setTimeout(reset,100),{passive:true});
 })();
