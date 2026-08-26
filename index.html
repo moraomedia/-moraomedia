@@ -1692,8 +1692,8 @@ body{line-height:1.25!important}
 <style id="morao-header-scroll-dependent">
 /* Header visibility follows scroll position: hidden over Hero, visible from Photography onward. */
 body > nav.nav{
-  opacity:0!important;
-  visibility:hidden!important;
+  opacity:0;
+  visibility:hidden;
   pointer-events:none!important;
   transform:translate3d(0,-32px,0)!important;
   clip-path:inset(0 0 100% 0)!important;
@@ -3001,45 +3001,214 @@ document.addEventListener('DOMContentLoaded', function(){
 }
 </style>
 
-<style id="morao-v112-mobile-photo-state-lock">
-@media(max-width:800px){
-  body.morao-photo-state-lock{
-    overscroll-behavior:none!important;
-  }
-  .photography-section .photo-pin{
-    position:sticky!important;
-    top:0!important;
-  }
-}
-</style>
 
-<style id="morao-client-strip-final">
-.client-strip{
-  width:min(1080px,100%)!important;
-  height:100px!important;
-  margin:0 auto!important;
-  padding:0!important;
-  overflow:hidden!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  box-sizing:border-box!important;
+
+<style id="morao-v123-create-stable">
+.clients-section{
+  background:#08070b!important;
 }
-.client-strip img{
+.clients-section .client-strip{
+  border:0!important;
+  background:transparent!important;
+}
+.clients-section .client-strip img{
   display:block!important;
   width:100%!important;
   height:100%!important;
   max-width:none!important;
   object-fit:contain!important;
-  object-position:center!important;
+}
+.creative-statement{
+  position:relative!important;
+  width:100vw!important;
+  height:100svh!important;
+  min-height:100svh!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+  background:#08070b!important;
+}
+.creative-statement-inner{
+  width:min(1500px,calc(100% - 48px))!important;
+  margin:0 auto!important;
+}
+.creative-statement-inner p{
+  margin:0!important;
+  color:#fff!important;
+  text-align:center!important;
+  font-family:Montserrat,Arial,sans-serif!important;
+  font-size:clamp(50px,9vw,156px)!important;
+  line-height:.88!important;
+  letter-spacing:-.045em!important;
+  font-weight:500!important;
 }
 @media(max-width:800px){
-  .client-strip{
-    width:100%!important;
-    height:auto!important;
-    aspect-ratio:1080/100!important;
+  .creative-statement-inner{
+    width:calc(100% - 28px)!important;
+  }
+  .creative-statement-inner p{
+    font-size:clamp(42px,12vw,86px)!important;
   }
 }
+</style>
+
+<style id="morao-v139-hide-section-titles">
+.photography-section .photo-title-fixed,
+.video-section .media-title-fixed,
+.social-section .media-title-fixed,
+#about .sectionhead{
+  display:none!important;
+}
+</style>
+
+<style id="morao-v139-create-photo-layout">
+html{
+  background:#08070b!important;
+}
+body{
+  background:
+    radial-gradient(ellipse at 18% 12%,rgba(139,61,255,.22),transparent 30%),
+    radial-gradient(ellipse at 82% 40%,rgba(195,77,255,.13),transparent 28%),
+    linear-gradient(135deg,#08070b 0%,#110b17 48%,#07060a 100%)!important;
+}
+.clients-section,
+.creative-statement{
+  background:#08070b!important;
+}
+
+.clients-section .client-strip{
+  border:0!important;
+  background:transparent!important;
+}
+.clients-section .client-strip img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  object-fit:contain!important;
+}
+
+.creative-statement{
+  width:100vw!important;
+  height:100svh!important;
+  min-height:100svh!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+}
+.creative-statement-inner{
+  width:min(1500px,calc(100% - 48px))!important;
+  margin:0 auto!important;
+}
+.creative-statement-inner p{
+  margin:0!important;
+  color:#fff!important;
+  text-align:center!important;
+  font-family:Montserrat,Arial,sans-serif!important;
+  font-size:clamp(50px,9vw,156px)!important;
+  line-height:.88!important;
+  letter-spacing:-.045em!important;
+  font-weight:500!important;
+}
+
+.photography-section,
+.photography-section .photo-scroll{
+  width:100vw!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+}
+.photography-section .photo-pin{
+  width:100vw!important;
+  height:100svh!important;
+  min-height:100svh!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+}
+</style>
+
+
+
+<style id="morao-v141-purple-overlay-fixed">
+.morao-purple-transition{
+  position:fixed!important;
+  left:0!important;
+  top:0!important;
+  width:100vw!important;
+  height:100vh!important;
+  background:#7A2AA6!important;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none!important;
+  z-index:2147483647!important;
+  display:block!important;
+}
+.morao-purple-transition.is-visible{
+  visibility:visible;
+}
+</style>
+
+
+
+<style id="morao-v160-create-hold-single-transition">
+/*
+  One and only one transition corridor:
+  CREATE end -> small reading hold -> purple transition -> PHOTO.
+*/
+.morao-scroll-purple{
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100svh!important;
+  background:#7A2AA6!important;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none!important;
+  z-index:2147483647!important;
+}
+.morao-scroll-purple.is-visible{
+  visibility:visible;
+}
+
+/* Small controlled hold at the end of CREATE. */
+html.morao-create-hold,
+body.morao-create-hold{
+  overflow:hidden!important;
+  overscroll-behavior:none!important;
+}
+</style>
+
+<style id="morao-v218-create-text-higher">
+/* Move only the CREATE phrase upward; keep its section height/scroll geometry. */
+.creative-statement-inner{
+  transform:translateY(-12vh)!important;
+}
+
+@media(max-width:800px){
+  .creative-statement-inner{
+    transform:translateY(-9vh)!important;
+  }
+}
+
+@media(max-width:500px){
+  .creative-statement-inner{
+    transform:translateY(-7vh)!important;
+  }
+}
+</style>
+
+<style id="morao-v231-photo-handoff-cover">
+  #fotografia.morao-photo-handoff-hidden{
+    visibility:hidden!important;
+  }
 </style>
 </head>
 
@@ -3075,15 +3244,14 @@ document.addEventListener('DOMContentLoaded', function(){
     <div class="client-strip reveal" aria-label="Espacio reservado para logos de clientes">
       <img src="assets/clientes.png" alt="Clientes de Morao Media">
     </div>
-    <div class="client-strip-note reveal"></div>
+    
   </div>
 </section>
-
-
-
-
-
-
+<section class="creative-statement" id="crear">
+  <div class="creative-statement-inner">
+    <p>CREAR.<br>CONTAR.<br>SENTIR.</p>
+  </div>
+</section>
 
 <section id="fotografia" class="portfolio-section photography-section">
   <div class="photo-scroll">
@@ -3217,9 +3385,23 @@ document.addEventListener('DOMContentLoaded', function(){
   function updatePhotography() {
     if (!photoScroll || !photoStack) return;
 
-    const p = (window.moraoPhotoLocked && Number.isFinite(window.moraoPhotoVirtualProgress))
-      ? window.moraoPhotoVirtualProgress
-      : sectionProgress(photoScroll);
+    const rawPhotoP = sectionProgress(photoScroll);
+    const photoTravelPx = Math.max(photoScroll.offsetHeight - innerHeight, 1);
+    const purpleGatePx = 420;
+    const traveledPx = rawPhotoP * photoTravelPx;
+
+    /*
+      FOTO animation is delayed by the same real scroll distance occupied by
+      the purple transition. No virtual progress counter is involved.
+    */
+    const p = Math.max(
+      0,
+      Math.min(
+        1,
+        (traveledPx - purpleGatePx) /
+        Math.max(photoTravelPx - purpleGatePx, 1)
+      )
+    );
     const cards = [...photoStack.children];
     const cardProgress = new Array(cards.length).fill(0);
     const mobile = innerWidth <= 800;
@@ -3250,6 +3432,10 @@ document.addEventListener('DOMContentLoaded', function(){
       );
       const cardW = cardH * 0.75;
       const visualH = cardH * scale;
+      const centeredCardTop = Math.max(
+        0,
+        (visualH - cardH) / 2
+      );
 
       const stackTop = titleBottom + gap;
       photoStack.style.top = stackTop + 'px';
@@ -3269,6 +3455,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
         card.style.width = cardW + 'px';
         card.style.height = cardH + 'px';
+        card.style.top = centeredCardTop + 'px';
         card.style.opacity = q;
         card.style.transformOrigin = 'center top';
         card.style.transform =
@@ -3304,6 +3491,10 @@ document.addEventListener('DOMContentLoaded', function(){
       photoStack.style.height = cardH + 'px';
 
       const entryY = pinH + cardH;
+      const centeredCardTop = Math.max(
+        0,
+        (cardH - cardH) / 2
+      );
 
       cards.forEach((card, i) => {
         const start = i === 0 ? 0 : 0.07 + (i - 1) * 0.12;
@@ -3315,6 +3506,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
         card.style.width = cardW + 'px';
         card.style.height = cardH + 'px';
+        card.style.top = centeredCardTop + 'px';
         card.style.opacity = q;
         card.style.transformOrigin = 'center top';
         card.style.transform =
@@ -3431,158 +3623,372 @@ document.addEventListener('DOMContentLoaded', function(){
 })();
 </script>
 
-<script id="morao-v112-mobile-photo-state-lock">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="moraoScrollPurple" class="morao-scroll-purple" aria-hidden="true"></div>
+<script id="morao-v167-purple-transition-symmetric">
 (function(){
-  const isMobile=()=>window.innerWidth<=800;
-  const section=document.querySelector('.photography-section');
-  const stage=section && section.querySelector('.photo-scroll');
-  if(!section || !stage) return;
+  const create=document.querySelector('.creative-statement');
+  const photo=document.querySelector('#fotografia');
+  const overlay=document.getElementById('moraoScrollPurple');
+  if(!create || !photo || !overlay) return;
 
-  let locked=false;
-  let completed=false;
-  let virtualProgress=0;
-  let touchLastY=null;
-  let lockScrollY=0;
+  const HOLD_INPUT=180;
+  const HOLD_PX=72;
+  const FADE_IN=80;
+  const FADE_OUT=125;
 
-  window.moraoPhotoLocked=false;
-  window.moraoPhotoVirtualProgress=0;
+  let state='idle'; // idle | createHold | forwardTravel | photoHold | reverseTravel
+  let holdInput=0;
+  let touchY=null;
+  let purpleJumping=false;
 
-  function getProgressFromScroll(){
-    const distance=Math.max(stage.offsetHeight-window.innerHeight,1);
-    return Math.min(1,Math.max(0,-stage.getBoundingClientRect().top/distance));
+  const clamp=(v,a=0,b=1)=>Math.min(Math.max(v,a),b);
+  const ease=t=>t*t*(3-2*t);
+
+  function topOf(el){
+    return el.getBoundingClientRect().top + window.scrollY;
   }
-
-  function isAtPhotoStart(){
-    if(!isMobile()) return false;
-    const r=stage.getBoundingClientRect();
-    return r.top>=-4 && r.top<=12;
+  function createEnd(){
+    return topOf(create)+create.offsetHeight-window.innerHeight;
   }
-
-  function renderProgress(p){
-    virtualProgress=Math.max(0,Math.min(1,p));
-    window.moraoPhotoVirtualProgress=virtualProgress;
-
+  function photoStart(){
+    return topOf(photo);
+  }
+  function transitionStart(){
     /*
-      The site's existing scroll listener will call updatePhotography().
-      Calling it explicitly here makes the animation react immediately to
-      the virtual state even though the document itself is not scrolling.
+      Start the purple earlier so FOTO never becomes visible before the
+      transition has covered the viewport. This changes only the start
+      position; the end of the transition remains tied to PHOTO.
     */
-    window.dispatchEvent(new Event('scroll'));
+    return createEnd()-180;
   }
 
-  function enterLock(initialDelta){
-    locked=true;
-    completed=false;
-    lockScrollY=window.scrollY;
-    document.body.classList.add('morao-photo-state-lock');
-
-    virtualProgress=0;
-    window.moraoPhotoLocked=true;
-    window.moraoPhotoVirtualProgress=0;
-
-    renderProgress(initialDelta);
-  }
-
-  function leaveForward(){
-    virtualProgress=1;
-    window.moraoPhotoVirtualProgress=1;
-    window.moraoPhotoLocked=true;
-    window.dispatchEvent(new Event('scroll'));
-
-    completed=true;
-    locked=false;
-    window.moraoPhotoLocked=false;
-    document.body.classList.remove('morao-photo-state-lock');
-
-    /*
-      Jump only after PHOTO is fully complete. This is the handoff point:
-      the next native scroll event can continue into VIDEO.
-    */
-    const endY=lockScrollY + Math.max(stage.offsetHeight-window.innerHeight,0) + 2;
-    window.scrollTo(0,endY);
-  }
-
-  function leaveBackward(){
-    locked=false;
-    completed=false;
-    virtualProgress=0;
-    window.moraoPhotoLocked=false;
-    window.moraoPhotoVirtualProgress=0;
-    document.body.classList.remove('morao-photo-state-lock');
-  }
-
-  function step(delta){
-    const next=Math.max(0,Math.min(1,virtualProgress+delta));
-    renderProgress(next);
-
-    if(next>=1){
-      leaveForward();
-    }else if(next<=0 && delta<0){
-      leaveBackward();
-      window.scrollTo(0,Math.max(0,lockScrollY-2));
+  function setPurple(v){
+    if(v>0.001){
+      overlay.classList.add('is-visible');
+      overlay.style.opacity=v.toFixed(3);
+    }else{
+      overlay.style.opacity='0';
+      overlay.classList.remove('is-visible');
     }
   }
 
-  function wheel(e){
-    if(!isMobile()) return;
+  function lock(on){
+    document.documentElement.classList.toggle('morao-create-hold',on);
+    document.body.classList.toggle('morao-create-hold',on);
+  }
 
-    if(locked){
-      e.preventDefault();
-      step(e.deltaY/2600);
+  /*
+    ONE transition corridor in document coordinates.
+    Reversing the scroll automatically reverses the exact same curve.
+  */
+  function renderFromScroll(){
+    /*
+      CREATE is allowed to keep the position-derived purple while locked.
+      PHOTO keeps its existing clean hold behavior.
+    */
+    if(state==='photoHold'){
+      setPurple(0);
       return;
     }
 
-    if(!completed && e.deltaY>0 && isAtPhotoStart()){
+    const y=window.scrollY;
+    const start=transitionStart();
+    const end=photoStart();
+    const span=Math.max(end-start,1);
+
+    if(y<start || y>end){
+      setPurple(0);
+      return;
+    }
+
+    const p=clamp((y-start)/span);
+    const fi=Math.min(FADE_IN/span,.25);
+    const fo=Math.min(FADE_OUT/span,.25);
+
+    /*
+      Shorter solid-purple plateau:
+      the fade-in and fade-out lengths stay the same, but the fully solid
+      portion is compressed so the screen does not remain purple as long.
+    */
+    const SOLID_REDUCTION=0.35;
+    const solidStart=fi;
+    const solidEnd=Math.max(
+      solidStart,
+      1-fo-SOLID_REDUCTION
+    );
+
+    let opacity=0;
+    if(p<=fi){
+      opacity=ease(p/Math.max(fi,.001));
+    }else if(p<=solidEnd){
+      opacity=1;
+    }else{
+      opacity=1-ease(
+        (p-solidEnd)/Math.max(1-solidEnd,.001)
+      );
+    }
+
+    setPurple(opacity);
+
+    /*
+      Do the invisible PHOTO handoff as soon as the veil reaches 90%.
+      That means PHOTO is already centered underneath before the screen ever
+      becomes fully purple, eliminating the visible "PHOTO enters below"
+      moment shown in the screenshot.
+    */
+    if(state==='forwardTravel' && opacity>=0.90 && !purpleJumping){
+      jumpToPhotoUnderPurple();
+    }
+  }
+
+  function enterCreateHold(){
+    state='createHold';
+    holdInput=0;
+    lock(true);
+
+    /*
+      Do NOT switch purple off here. The transition already started earlier
+      (180px before CREATE ends), so turning it off would create the visible
+      ON -> OFF -> ON double flash.
+    */
+    renderFromScroll();
+  }
+
+  function jumpToPhotoUnderPurple(){
+    if(purpleJumping) return;
+    purpleJumping=true;
+
+    setPurple(1);
+    photo.classList.add('morao-photo-handoff-hidden');
+
+    const target=photoStart();
+
+    requestAnimationFrame(()=>{
+      window.scrollTo({top:target,left:0,behavior:'auto'});
+
+      requestAnimationFrame(()=>{
+        /*
+          Give the sticky PHOTO layout one full frame to settle before it is
+          revealed. This removes the visible "card peeking from below" frame.
+        */
+        window.dispatchEvent(new Event('scroll'));
+
+        requestAnimationFrame(()=>{
+          photo.classList.remove('morao-photo-handoff-hidden');
+
+          purpleJumping=false;
+          state='forwardTravel';
+          holdInput=0;
+          lock(false);
+
+          /*
+            Let the existing scroll renderer own the color from this point.
+            No extra jump or guessed PHOTO progress is introduced.
+          */
+          renderFromScroll();
+        });
+      });
+    });
+  }
+
+
+  function enterPhotoHold(){
+    state='photoHold';
+    holdInput=0;
+    lock(true);
+    setPurple(0);
+  }
+
+  function wheel(e){
+    const dy=e.deltaY;
+
+    if(state==='createHold'){
       e.preventDefault();
-      enterLock(e.deltaY/2600);
+      if(dy>0){
+        holdInput+=dy;
+        if(holdInput>=HOLD_INPUT){
+          state='forwardTravel';
+          holdInput=0;
+          lock(false);
+          renderFromScroll();
+        }
+      }else{
+        holdInput=Math.max(0,holdInput+dy);
+      }
+      return;
+    }
+
+    /*
+      When returning upward from PHOTO, forwardTravel must hand control back
+      to the normal boundary detector immediately instead of swallowing the
+      wheel event.
+    */
+    if(state==='forwardTravel' && dy<0){
+      state='idle';
+      renderFromScroll();
+    }
+
+    if(state==='photoHold'){
+      e.preventDefault();
+      if(dy<0){
+        holdInput+=-dy;
+        if(holdInput>=HOLD_INPUT){
+          state='reverseTravel';
+          holdInput=0;
+          lock(false);
+          renderFromScroll();
+        }
+      }else{
+        holdInput=Math.max(0,holdInput-dy);
+      }
+      return;
+    }
+
+    if(state==='reverseTravel' && dy>0){
+      state='idle';
+      renderFromScroll();
+    }
+
+    if(state==='idle'){
+      if(dy>0 && create.getBoundingClientRect().bottom<=window.innerHeight+4){
+        e.preventDefault();
+        enterCreateHold();
+        return;
+      }
+      if(dy<0){
+        const t=photo.getBoundingClientRect().top;
+        if(t>=-4 && t<=4){
+          e.preventDefault();
+          enterPhotoHold();
+        }
+      }
     }
   }
 
   function touchStart(e){
-    if(!isMobile() || !e.touches.length) return;
-    touchLastY=e.touches[0].clientY;
+    if(e.touches.length) touchY=e.touches[0].clientY;
   }
 
   function touchMove(e){
-    if(!isMobile() || touchLastY===null) return;
-
+    if(touchY===null) return;
     const y=e.touches[0].clientY;
-    const dy=touchLastY-y;
-    touchLastY=y;
+    const dy=touchY-y;
+    touchY=y;
+    if(!dy) return;
 
-    if(locked){
+    if(state==='createHold'){
       e.preventDefault();
-      step(dy/1450);
+      if(dy>0){
+        holdInput+=dy;
+        if(holdInput>=HOLD_INPUT){
+          state='forwardTravel';
+          holdInput=0;
+          lock(false);
+          renderFromScroll();
+        }
+      }else{
+        holdInput=Math.max(0,holdInput+dy);
+      }
       return;
     }
 
-    if(!completed && dy>0 && isAtPhotoStart()){
+    if(state==='forwardTravel' && dy<0){
+      state='idle';
+      renderFromScroll();
+    }
+
+    if(state==='photoHold'){
       e.preventDefault();
-      enterLock(dy/1450);
+      if(dy<0){
+        holdInput+=-dy;
+        if(holdInput>=HOLD_INPUT){
+          state='reverseTravel';
+          holdInput=0;
+          lock(false);
+          renderFromScroll();
+        }
+      }else{
+        holdInput=Math.max(0,holdInput-dy);
+      }
+      return;
+    }
+
+    if(state==='reverseTravel' && dy>0){
+      state='idle';
+      renderFromScroll();
+    }
+
+    if(state==='idle'){
+      if(dy>0 && create.getBoundingClientRect().bottom<=window.innerHeight+4){
+        e.preventDefault();
+        enterCreateHold();
+        return;
+      }
+      if(dy<0){
+        const t=photo.getBoundingClientRect().top;
+        if(t>=-4 && t<=4){
+          e.preventDefault();
+          enterPhotoHold();
+        }
+      }
     }
   }
 
-  function touchEnd(){
-    touchLastY=null;
+  function onScroll(){
+    /* Actual scroll position is the only source of truth for the purple. */
+    if(state==='idle' || state==='forwardTravel' || state==='reverseTravel'){
+      renderFromScroll();
+
+      const y=window.scrollY;
+      const start=transitionStart();
+      const end=photoStart();
+
+      if(state==='forwardTravel' && y<start){
+        state='idle';
+        setPurple(0);
+      }else if(state==='reverseTravel' && y>end){
+        state='idle';
+        setPurple(0);
+      }
+    }
   }
+
+  function touchEnd(){ touchY=null; }
 
   function reset(){
-    if(window.innerWidth>800){
-      locked=false;
-      completed=false;
-      virtualProgress=0;
-      window.moraoPhotoLocked=false;
-      window.moraoPhotoVirtualProgress=0;
-      document.body.classList.remove('morao-photo-state-lock');
-    }
+    state='idle';
+    holdInput=0;
+    touchY=null;
+    lock(false);
+    setPurple(0);
   }
 
   window.addEventListener('wheel',wheel,{passive:false});
   window.addEventListener('touchstart',touchStart,{passive:true});
   window.addEventListener('touchmove',touchMove,{passive:false});
   window.addEventListener('touchend',touchEnd,{passive:true});
+  window.addEventListener('scroll',onScroll,{passive:true});
   window.addEventListener('resize',reset,{passive:true});
   window.addEventListener('orientationchange',()=>setTimeout(reset,100),{passive:true});
+
+  setPurple(0);
 })();
 </script>
 </body>
