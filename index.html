@@ -3387,7 +3387,7 @@ body.morao-create-hold{
 
     const rawPhotoP = sectionProgress(photoScroll);
     const photoTravelPx = Math.max(photoScroll.offsetHeight - innerHeight, 1);
-    const purpleGatePx = 420;
+    const purpleGatePx = 0;
     const traveledPx = rawPhotoP * photoTravelPx;
 
     /*
@@ -3443,8 +3443,8 @@ body.morao-create-hold{
       photoStack.style.height = visualH + 'px';
 
       cards.forEach((card, i) => {
-        const start = i === 0 ? 0 : i * 0.082;
-        const duration = i === 0 ? 0 : 0.20;
+        const start = i === 0 ? 0 : i * 0.065;
+        const duration = i === 0 ? 0 : 0.15;
         const q = i === 0 ? 1 : ease(clamp((p - start) / duration));
         cardProgress[i] = q;
 
@@ -3497,8 +3497,8 @@ body.morao-create-hold{
       );
 
       cards.forEach((card, i) => {
-        const start = i === 0 ? 0 : 0.07 + (i - 1) * 0.12;
-        const duration = i === 0 ? 0 : 0.16;
+        const start = i === 0 ? 0 : 0.055 + (i - 1) * 0.095;
+        const duration = i === 0 ? 0 : 0.12;
         const q = i === 0 ? 1 : ease(clamp((p - start) / duration));
         cardProgress[i] = q;
 
