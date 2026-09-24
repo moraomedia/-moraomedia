@@ -3497,7 +3497,7 @@ body.morao-create-lock{
 .bg-blob-filter{
   position:absolute;
   inset:-10%;
-  filter:url(#morao-goo);
+  filter:blur(120px);
 }
 .bg-blob{
   position:absolute;
@@ -3603,13 +3603,6 @@ header.hero.hero-secondary{
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <filter id="morao-goo">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="46" result="blur">
-        <animate attributeName="stdDeviation" values="46;64;46" dur="17s" repeatCount="indefinite" />
-      </feGaussianBlur>
-      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -11" result="goo" />
-      <feBlend in="SourceGraphic" in2="goo" />
-    </filter>
     <filter id="morao-noise">
       <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" result="noise" />
       <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0" />
