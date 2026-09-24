@@ -3437,14 +3437,13 @@ body.morao-create-lock{
   background:#08070b !important;
 }
 .client-marquee{
-  width:100% !important;
-  max-width:none !important;
+  width:100vw !important;
+  max-width:100vw !important;
+  margin-left:calc(50% - 50vw) !important;
   height:auto !important;
   overflow:hidden !important;
   border:0 !important;
   background:none !important;
-  -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
-  mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
 }
 .client-marquee-track{
   display:flex;
@@ -3456,10 +3455,10 @@ body.morao-create-lock{
   .client-marquee-track{animation:none}
 }
 .client-logo-strip{
-  height:48px;
+  height:96px;
   width:auto;
   flex-shrink:0;
-  margin-right:64px;
+  margin-right:0;
   display:block;
 }
 @keyframes client-marquee-scroll{
@@ -3467,7 +3466,7 @@ body.morao-create-lock{
   to{transform:translateX(-50%)}
 }
 @media(max-width:800px){
-  .client-logo-strip{height:36px;margin-right:40px}
+  .client-logo-strip{height:64px}
 }
 </style>
 </head>
@@ -3505,12 +3504,10 @@ body.morao-create-lock{
 
 <main>
 <section class="clients-section">
-  <div class="wrap">
-    <div class="client-marquee reveal" aria-label="Logos de clientes">
-      <div class="client-marquee-track">
-        <img class="client-logo-strip" src="assets/clientes.png" alt="Logos de clientes">
-        <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-      </div>
+  <div class="client-marquee reveal" aria-label="Logos de clientes">
+    <div class="client-marquee-track">
+      <img class="client-logo-strip" src="assets/clientes.png" alt="Logos de clientes">
+      <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
     </div>
   </div>
 </section>
