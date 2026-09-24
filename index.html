@@ -3556,6 +3556,13 @@ body.morao-create-lock{
 @media(prefers-reduced-motion:reduce){
   .bg-blob-a,.bg-blob-b,.bg-blob-c,.bg-blob-d{animation:none}
 }
+.bg-noise{
+  position:absolute;
+  inset:0;
+  filter:url(#morao-noise);
+  opacity:.05;
+  mix-blend-mode:overlay;
+}
 
 /* INTRO BURN — the burn video sits directly on top of the (already
    playing) scaled hero video, inside the exact same box, so as it's
@@ -3597,11 +3604,15 @@ header.hero.hero-secondary{
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <filter id="morao-goo">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="18" result="blur">
-        <animate attributeName="stdDeviation" values="18;26;18" dur="17s" repeatCount="indefinite" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="46" result="blur">
+        <animate attributeName="stdDeviation" values="46;64;46" dur="17s" repeatCount="indefinite" />
       </feGaussianBlur>
-      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9" result="goo" />
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -11" result="goo" />
       <feBlend in="SourceGraphic" in2="goo" />
+    </filter>
+    <filter id="morao-noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" result="noise" />
+      <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0" />
     </filter>
   </defs>
 </svg>
@@ -3612,6 +3623,7 @@ header.hero.hero-secondary{
     <div class="bg-blob bg-blob-c"></div>
     <div class="bg-blob bg-blob-d"></div>
   </div>
+  <div class="bg-noise"></div>
 </div>
 <div id="moraoCrearPurple" aria-hidden="true"></div>
 <nav class="nav">
