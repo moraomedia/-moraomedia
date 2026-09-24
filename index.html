@@ -113,12 +113,17 @@ button{font:inherit}
 .hero-media{
   position:absolute;
   inset:-4%;
-  background:
-    radial-gradient(circle at 50% 38%,rgba(195,77,255,.62),transparent 28%),
-    radial-gradient(circle at 18% 75%,rgba(83,24,180,.55),transparent 32%),
-    linear-gradient(135deg,#171022,#4c176e 52%,#08070b);
+  background:#08070b;
+  overflow:hidden;
   transform:scale(1);
   will-change:transform;
+}
+.hero-video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 .hero-media:after{
   content:"";
@@ -3446,7 +3451,11 @@ body.morao-create-lock{
 </nav>
 
 <header class="hero" id="top">
-  <div class="hero-media" id="heroMedia" aria-hidden="true"></div>
+  <div class="hero-media" id="heroMedia" aria-hidden="true">
+    <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="assets/foto-01.jpg">
+      <source src="assets/hero-video.mp4" type="video/mp4">
+    </video>
+  </div>
   <div class="wrap hero-content">
     <div class="hero-logo reveal"><img src="assets/morao-logo-white.png" alt="Morao Media"></div>
     <p class="hero-copy reveal">PRODUCCIÓN AUDIOVISUAL PARA EVENTOS, MÚSICA Y PROYECTOS.</p>
