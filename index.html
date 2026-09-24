@@ -3563,6 +3563,11 @@ body.morao-create-lock{
   opacity:.05;
   mix-blend-mode:overlay;
 }
+.bg-blob-mouse{
+  position:absolute;
+  inset:0;
+  will-change:transform;
+}
 
 /* INTRO BURN — the burn video sits directly on top of the (already
    playing) scaled hero video, inside the exact same box, so as it's
@@ -3611,10 +3616,10 @@ header.hero.hero-secondary{
 </svg>
 <div class="bg-blob-wrap" aria-hidden="true">
   <div class="bg-blob-filter">
-    <div class="bg-blob bg-blob-a"></div>
-    <div class="bg-blob bg-blob-b"></div>
-    <div class="bg-blob bg-blob-c"></div>
-    <div class="bg-blob bg-blob-d"></div>
+    <div class="bg-blob-mouse" data-depth="38"><div class="bg-blob bg-blob-a"></div></div>
+    <div class="bg-blob-mouse" data-depth="-30"><div class="bg-blob bg-blob-b"></div></div>
+    <div class="bg-blob-mouse" data-depth="24"><div class="bg-blob bg-blob-c"></div></div>
+    <div class="bg-blob-mouse" data-depth="-46"><div class="bg-blob bg-blob-d"></div></div>
   </div>
   <div class="bg-noise"></div>
 </div>
@@ -4202,6 +4207,49 @@ header.hero.hero-secondary{
   window.addEventListener('scroll', onScroll, {passive:true});
   window.addEventListener('resize', onScroll);
   update();
+})();
+</script>
+
+<script>
+(function(){
+  var blobs = [].slice.call(document.querySelectorAll('.bg-blob-mouse'));
+  if(!blobs.length) return;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduceMotion) return;
+  if(window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
+
+  /* Background blobs drift toward the mouse position, like the reference
+     site — each one moves by its own data-depth (px at full offset,
+     positive or negative for varied direction), eased toward the target
+     each frame (lerp) rather than snapping, so it feels fluid rather
+     than mechanical. */
+  var targetX = 0, targetY = 0;
+  var current = blobs.map(function(){ return {x:0, y:0}; });
+  var EASE = 0.06;
+  var raf = null;
+
+  function onMouseMove(e){
+    targetX = (e.clientX / window.innerWidth) * 2 - 1;
+    targetY = (e.clientY / window.innerHeight) * 2 - 1;
+    if(!raf) raf = requestAnimationFrame(tick);
+  }
+
+  function tick(){
+    var settled = true;
+    blobs.forEach(function(el, i){
+      var depth = parseFloat(el.getAttribute('data-depth')) || 0;
+      var goalX = targetX * depth;
+      var goalY = targetY * depth * 0.7;
+      var c = current[i];
+      c.x += (goalX - c.x) * EASE;
+      c.y += (goalY - c.y) * EASE;
+      if(Math.abs(goalX - c.x) > 0.05 || Math.abs(goalY - c.y) > 0.05) settled = false;
+      el.style.transform = 'translate3d(' + c.x.toFixed(2) + 'px,' + c.y.toFixed(2) + 'px,0)';
+    });
+    raf = settled ? null : requestAnimationFrame(tick);
+  }
+
+  window.addEventListener('mousemove', onMouseMove, {passive:true});
 })();
 </script>
 
