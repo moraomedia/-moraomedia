@@ -124,6 +124,7 @@ button{font:inherit}
   width:100%;
   height:100%;
   object-fit:cover;
+  z-index:1;
 }
 header.hero{
   background:#08070b;
@@ -1749,7 +1750,7 @@ body.morao-nav-visible > nav.nav{
 <script>
 document.addEventListener('DOMContentLoaded', function(){
   const nav = document.querySelector('body > nav.nav');
-  const hero = document.querySelector('body > header.hero');
+  const hero = document.querySelector('header.hero');
   const photo = document.getElementById('fotografia');
 
   if (!nav || !hero || !photo) return;
@@ -3494,43 +3495,24 @@ body.morao-create-lock{
   pointer-events:none;
 }
 
-/* INTRO BURN — a short scroll-scrubbed video: scrolling down advances it
-   frame by frame, scrolling up rewinds it, until it fades out (its last
-   frames are black) to reveal the secondary hero section beneath it. */
-.intro-burn{
+/* INTRO BURN — the burn video sits directly on top of the (already
+   playing) scaled hero video, inside the exact same box, so as it's
+   scroll-scrubbed frame by frame and its opacity fades out (its last
+   frames are black), the scaled video underneath is revealed exactly
+   in place — not a separate section, the very same spot. The runway
+   div is taller than the sticky secondary hero so scrolling through
+   it keeps that hero pinned at the top for the whole burn animation;
+   once the runway ends, the hero un-pins and behaves like a normal
+   section again (see the existing scroll zoom-out/fade-out effect). */
+.intro-runway{
   position:relative;
   height:350vh;
-  background:#08070b;
 }
-.intro-burn-pin{
-  position:sticky;
-  top:0;
-  height:100svh;
-  overflow:hidden;
-  z-index:5;
-  background:#08070b;
-}
-.intro-burn-video{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  will-change:opacity;
-}
-@media(prefers-reduced-motion:reduce){
-  .intro-burn{height:auto}
-  .intro-burn-pin{position:relative;height:100svh}
-}
-
-/* SECONDARY HERO — the former hero, now a smaller section further down
-   the page: no logo, same looping video + scroll zoom-out, scaled down.
-   Kept above the intro-burn's sticky video (z-index) so it's always the
-   top layer once it takes over. */
 header.hero.hero-secondary{
+  position:sticky !important;
+  top:0 !important;
   min-height:56svh !important;
   padding:64px 0 40px !important;
-  z-index:10;
 }
 @media(max-width:800px){
   header.hero.hero-secondary{
@@ -3538,10 +3520,24 @@ header.hero.hero-secondary{
     padding:48px 0 32px !important;
   }
 }
+.intro-burn-video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:2;
+  will-change:opacity;
+}
+@media(prefers-reduced-motion:reduce){
+  .intro-runway{height:auto}
+  header.hero.hero-secondary{position:relative}
+  .intro-burn-video{display:none}
+}
 
-/* Scroll lock engaged for a beat right after the intro-burn finishes,
-   so the secondary hero has a moment to settle in before scrolling
-   continues. See MORAO_INTRO_LOCK_JS. */
+/* Scroll lock engaged for a beat right after the burn video fades out,
+   so the scaled video it revealed has a moment to settle in before
+   scrolling continues. See MORAO_INTRO_LOCK_JS. */
 body.morao-intro-lock{
   overflow:hidden !important;
 }
@@ -3569,27 +3565,24 @@ body.morao-intro-lock{
   </div>
 </nav>
 
-<section class="intro-burn" id="top" aria-label="Intro">
-  <div class="intro-burn-pin">
-    <video class="intro-burn-video" id="introBurnVideo" muted playsinline preload="auto" aria-hidden="true">
-      <source src="assets/intro-burn.mp4" type="video/mp4">
-    </video>
-  </div>
-</section>
+<div class="intro-runway" id="top">
+  <header class="hero hero-secondary" id="heroSecondary">
+    <div class="hero-zoom" id="heroZoom">
+      <div class="hero-media" id="heroMedia" aria-hidden="true">
+        <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="assets/foto-01.jpg">
+          <source src="assets/hero-video.mp4" type="video/mp4">
+        </video>
+        <video class="intro-burn-video" id="introBurnVideo" muted playsinline preload="auto" aria-hidden="true">
+          <source src="assets/intro-burn.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="wrap hero-content">
+        <p class="hero-copy reveal">PRODUCCIÓN AUDIOVISUAL PARA EVENTOS, MÚSICA Y PROYECTOS.</p>
 
-<header class="hero hero-secondary" id="heroSecondary">
-  <div class="hero-zoom" id="heroZoom">
-    <div class="hero-media" id="heroMedia" aria-hidden="true">
-      <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="assets/foto-01.jpg">
-        <source src="assets/hero-video.mp4" type="video/mp4">
-      </video>
+      </div>
     </div>
-    <div class="wrap hero-content">
-      <p class="hero-copy reveal">PRODUCCIÓN AUDIOVISUAL PARA EVENTOS, MÚSICA Y PROYECTOS.</p>
-
-    </div>
-  </div>
-</header>
+  </header>
+</div>
 
 <main>
 <section class="clients-section">
@@ -4073,9 +4066,10 @@ body.morao-intro-lock{
 
 <script>
 (function(){
-  var section = document.querySelector('.intro-burn');
+  var runway = document.querySelector('.intro-runway');
+  var heroSecondary = document.querySelector('header.hero.hero-secondary');
   var video = document.getElementById('introBurnVideo');
-  if(!section || !video) return;
+  if(!runway || !heroSecondary || !video) return;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(reduceMotion) return;
 
@@ -4083,8 +4077,11 @@ body.morao-intro-lock{
      frame, scrolling up rewinds it, by driving video.currentTime directly
      from scroll position. The video should be encoded with a keyframe on
      every frame (all-intra) so arbitrary seeks stay smooth. Once the video
-     nears its last (black) frame, fade it out over the remaining scroll so
-     it dissolves cleanly into the secondary hero section beneath it. */
+     nears its last (black) frame, fade it out over the remaining scroll to
+     reveal the scaled hero video sitting right behind it, in the exact
+     same box. The secondary hero is pinned (position:sticky) for as long
+     as the runway is taller than it, so the scrubbing range is that
+     leftover space, not the full runway height. */
   var FADE_START = 0.92;
   var duration = 0;
   var ticking = false;
@@ -4092,8 +4089,8 @@ body.morao-intro-lock{
   function update(){
     ticking = false;
     if(!duration) return;
-    var scrollRange = Math.max(section.offsetHeight - window.innerHeight, 1);
-    var progress = -section.getBoundingClientRect().top / scrollRange;
+    var scrollRange = Math.max(runway.offsetHeight - heroSecondary.offsetHeight, 1);
+    var progress = -runway.getBoundingClientRect().top / scrollRange;
     if(progress < 0) progress = 0;
     if(progress > 1) progress = 1;
 
@@ -4129,16 +4126,20 @@ body.morao-intro-lock{
 <script id="MORAO_INTRO_LOCK_JS">
 (function(){
   var introVideo = document.getElementById('introBurnVideo');
+  var runway = document.querySelector('.intro-runway');
   var heroSecondary = document.querySelector('header.hero.hero-secondary');
-  if(!introVideo || !heroSecondary) return;
+  if(!introVideo || !runway || !heroSecondary) return;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(reduceMotion) return;
 
-  /* Once the burn intro has fully faded out (opacity ~0, set by the
-     scroll-scrubbing script above), snap the secondary hero exactly to
-     the top of the viewport and lock scrolling for a beat so it has a
-     moment to settle before the page keeps moving. */
-  var LOCK_MS = 1000;
+  /* Once the burn video has fully faded out (opacity ~0, set by the
+     scroll-scrubbing script above) — revealing the scaled hero video
+     sitting right behind it — snap to the exact scroll position where
+     that happens (correcting any overshoot) and lock scrolling for a
+     beat so that revealed video has a moment to settle before the page
+     keeps moving. The secondary hero is already pinned in place there
+     (position:sticky), so this is a freeze in place, not a jump. */
+  var LOCK_MS = 1500;
   var locked = false;
   var passed = false;
 
@@ -4147,14 +4148,19 @@ body.morao-intro-lock{
     return !isNaN(opacity) && opacity <= 0.02;
   }
 
+  function revealScrollY(){
+    var scrollRange = Math.max(runway.offsetHeight - heroSecondary.offsetHeight, 1);
+    return runway.offsetTop + scrollRange;
+  }
+
   function rearm(){
-    if(window.scrollY < heroSecondary.offsetTop - window.innerHeight * 0.4) passed = false;
+    if(window.scrollY < revealScrollY() - window.innerHeight * 0.4) passed = false;
   }
 
   function engageLock(){
     if(locked || passed) return;
     locked = true;
-    window.scrollTo(0, heroSecondary.offsetTop);
+    window.scrollTo(0, revealScrollY());
     document.body.classList.add('morao-intro-lock');
     setTimeout(function(){
       document.body.classList.remove('morao-intro-lock');
