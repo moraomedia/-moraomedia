@@ -3606,6 +3606,55 @@ header.hero.hero-secondary{
 </style>
 
 <style id="morao-v19-helvetica-typography">
+/* Self-hosted Helvetica Neue — without this @font-face, 'Helvetica Neue'
+   in font-family only works on macOS/iOS (it's a licensed system font
+   there); every other OS silently falls back to Arial. No Bold weight
+   file was provided, so 700 is mapped to Medium (the heaviest weight
+   available) rather than left unregistered, which would make the
+   browser synthesize a fake bold on top of a lighter face — synthetic
+   bold looks noticeably worse than a real, slightly-lighter weight. */
+@font-face{
+  font-family:'Helvetica Neue';
+  src:url('assets/fonts/HelveticaNeue-Thin.woff2') format('woff2');
+  font-weight:100;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:'Helvetica Neue';
+  src:url('assets/fonts/HelveticaNeue-UltraLight.woff2') format('woff2');
+  font-weight:200;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:'Helvetica Neue';
+  src:url('assets/fonts/HelveticaNeue-Light.woff2') format('woff2');
+  font-weight:300;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:'Helvetica Neue';
+  src:url('assets/fonts/HelveticaNeue-Regular.woff2') format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:'Helvetica Neue';
+  src:url('assets/fonts/HelveticaNeue-Medium.woff2') format('woff2');
+  font-weight:500;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:'Helvetica Neue';
+  src:url('assets/fonts/HelveticaNeue-Medium.woff2') format('woff2');
+  font-weight:700;
+  font-style:normal;
+  font-display:swap;
+}
 /* Sitewide typography: Helvetica Neue, lowercase everywhere — Light for
    body copy, Bold for titles/headings. !important because the rest of
    the file sets Montserrat and mixed weights/casing all over the place. */
