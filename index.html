@@ -3579,17 +3579,54 @@ body.morao-create-lock{
    it keeps that hero pinned at the top for the whole burn animation;
    once the runway ends, the hero un-pins and behaves like a normal
    section again (see the existing scroll zoom-out/fade-out effect). */
+/* Total pinned scroll runway = heroSecondary's own height (~100vh) plus
+   the four phase budgets driven by MORAO_HSTAGE_JS below: burn scrub+hold
+   (250vh) + settle (120vh) + horizontal pan (120vh) + foto reveal (220vh)
+   = 710vh of stuck scrolling, so this must be 710vh + 100vh = 810vh. If
+   the phase budgets in that script change, this height must match. */
 .intro-runway{
   position:relative;
-  height:350vh;
+  height:810vh;
 }
 header.hero.hero-secondary{
   position:sticky !important;
   top:0 !important;
   min-height:100svh !important;
   padding:0 !important;
+  overflow:hidden;
 }
-.intro-burn-video{
+.hstage-pin{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+}
+.hstage-track{
+  display:flex;
+  width:200%;
+  height:100%;
+  will-change:transform;
+}
+.hstage-panel{
+  position:relative;
+  width:50%;
+  height:100%;
+  flex-shrink:0;
+  overflow:hidden;
+  background:#08070b;
+}
+.hstage-video-slot{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#08070b;
+  z-index:1;
+  will-change:left,width;
+}
+.hstage-video-slot .hero-video{z-index:1}
+.hstage-video-slot .intro-burn-video{
   position:absolute;
   inset:0;
   width:100%;
@@ -3598,10 +3635,71 @@ header.hero.hero-secondary{
   z-index:2;
   will-change:opacity;
 }
+.hstage-copy{
+  position:absolute;
+  top:50%;
+  left:6vw;
+  max-width:44vw;
+  transform:translateY(-50%) translateX(-24px);
+  z-index:3;
+  opacity:0;
+  will-change:opacity,transform;
+}
+.hstage-copy-text{
+  margin:0;
+  text-align:left;
+  color:#fff;
+  line-height:0.94;
+  font-size:clamp(22px,3vw,60px);
+  white-space:nowrap;
+}
+.hstage-clients{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:130px;
+  z-index:4;
+  background:#08070b;
+  display:flex;
+  align-items:center;
+  transform:translateY(100%);
+  will-change:transform;
+}
+.hstage-clients .client-marquee{
+  position:relative !important;
+}
+.hstage-panel-foto{
+  background:#08070b;
+}
+.hstage-foto-stack{
+  position:relative;
+  width:100%;
+  height:100%;
+}
+.hstage-foto-card{
+  position:absolute;
+  overflow:hidden;
+  margin:0;
+}
+.hstage-foto-card img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
 @media(prefers-reduced-motion:reduce){
   .intro-runway{height:auto}
   header.hero.hero-secondary{position:relative}
   .intro-burn-video{display:none}
+  .hstage-track{transform:none !important}
+  .hstage-video-slot{left:50% !important;width:50% !important}
+  .hstage-copy{opacity:1 !important;transform:translateY(-50%) !important}
+  .hstage-clients{transform:translateY(0) !important}
+}
+@media(max-width:800px){
+  .hstage-copy{max-width:80vw;left:6vw}
+  .hstage-clients{height:90px}
 }
 </style>
 
@@ -3738,7 +3836,6 @@ h1,h2,h3,h4,
   </div>
   <div class="bg-noise"></div>
 </div>
-<div id="moraoCrearPurple" aria-hidden="true"></div>
 <nav class="nav">
   <div class="wrap navin">
     <a class="navlogo" href="#top" aria-label="Morao Media">
@@ -3755,17 +3852,53 @@ h1,h2,h3,h4,
 
 <div class="intro-runway" id="top">
   <header class="hero hero-secondary" id="heroSecondary">
-    <div class="hero-zoom" id="heroZoom">
-      <div class="hero-media" id="heroMedia" aria-hidden="true">
-        <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="assets/foto-01.jpg">
-          <source src="assets/hero-video.mp4" type="video/mp4">
-        </video>
-        <video class="intro-burn-video" id="introBurnVideo" muted playsinline preload="auto" aria-hidden="true">
-          <source src="assets/intro-burn.mp4" type="video/mp4">
-        </video>
-      </div>
-      <div class="wrap hero-content">
-        <p class="hero-copy reveal">PRODUCCIÓN AUDIOVISUAL PARA EVENTOS, MÚSICA Y PROYECTOS.</p>
+    <div class="hstage-pin" id="hstagePin">
+      <div class="hstage-track" id="hstageTrack">
+
+        <div class="hstage-panel hstage-panel-hero" id="hstagePanelHero">
+          <div class="hstage-video-slot" id="hstageVideoSlot" aria-hidden="true">
+            <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="assets/foto-01.jpg">
+              <source src="assets/hero-video.mp4" type="video/mp4">
+            </video>
+            <video class="intro-burn-video" id="introBurnVideo" muted playsinline preload="auto" aria-hidden="true">
+              <source src="assets/intro-burn.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="hstage-copy" id="hstageCopy">
+            <p class="hstage-copy-text">producción<br>audiovisual para<br>eventos, música y proyectos.</p>
+          </div>
+          <div class="hstage-clients" id="hstageClients">
+            <div class="client-marquee" aria-label="Logos de clientes">
+              <div class="client-marquee-track">
+                <img class="client-logo-strip" src="assets/clientes.png" alt="Logos de clientes">
+                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hstage-panel hstage-panel-foto" id="fotografia">
+          <div class="hstage-foto-stack" id="hstageFotoStack">
+            <div class="hstage-foto-card"><img src="assets/foto-01.jpg" alt="Fotografía 1"></div>
+            <div class="hstage-foto-card"><img src="assets/foto-02.jpg" alt="Fotografía 2"></div>
+            <div class="hstage-foto-card"><img src="assets/foto-03.jpg" alt="Fotografía 3"></div>
+            <div class="hstage-foto-card"><img src="assets/foto-04.jpg" alt="Fotografía 4"></div>
+            <div class="hstage-foto-card"><img src="assets/foto-05.jpg" alt="Fotografía 5"></div>
+            <div class="hstage-foto-card"><img src="assets/foto-06.jpg" alt="Fotografía 6"></div>
+            <div class="hstage-foto-card"><img src="assets/foto-07.jpg" alt="Fotografía 7"></div>
+            <div class="hstage-foto-card"><img src="assets/foto-08.jpg" alt="Fotografía 8"></div>
+          </div>
+        </div>
 
       </div>
     </div>
@@ -3773,70 +3906,8 @@ h1,h2,h3,h4,
 </div>
 
 <main>
-<section class="clients-section">
-  <div class="client-marquee reveal" aria-label="Logos de clientes">
-    <div class="client-marquee-track">
-      <img class="client-logo-strip" src="assets/clientes.png" alt="Logos de clientes">
-      <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-      <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-      <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-      <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-      <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-      <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-      <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-      <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-      <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-      <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-      <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-    </div>
-  </div>
-</section>
 
-
-
-
-
-
-
-
-<section id="crear" class="crear-section">
-  <div class="crear-stage">
-    <div class="crear-copy">CREAR. CONTAR. SENTIR.</div>
-  </div>
-</section>
-
-<section id="fotografia" class="portfolio-section photography-section">
-  <div class="photo-scroll">
-    <div class="photo-pin">
-      <div class="photo-stack" id="photoStack">
-        <div class="photo-card photo-1"><img src="assets/foto-01.jpg" alt="Fotografía 1">
-
-</div>
-        <div class="photo-card photo-2"><img src="assets/foto-02.jpg" alt="Fotografía 2">
-
-</div>
-        <div class="photo-card photo-3"><img src="assets/foto-03.jpg" alt="Fotografía 3">
-
-</div>
-        <div class="photo-card photo-4"><img src="assets/foto-04.jpg" alt="Fotografía 4">
-
-</div>
-        <div class="photo-card photo-5"><img src="assets/foto-05.jpg" alt="Fotografía 5">
-
-</div>
-        <div class="photo-card photo-6"><img src="assets/foto-06.jpg" alt="Fotografía 6">
-
-</div>
-        <div class="photo-card photo-7"><img src="assets/foto-07.jpg" alt="Fotografía 7">
-
-</div>
-        <div class="photo-card photo-8"><img src="assets/foto-08.jpg" alt="Fotografía 8">
-
-</div>
-      </div>
-    </div>
-  </div>
-</section>
+<section id="galeria" class="galeria-section" aria-label="Galería"></section>
 
 <section id="video" class="portfolio-section video-section">
   <div class="video-sequence" id="videoSequence">
@@ -4125,165 +4196,129 @@ h1,h2,h3,h4,
 </script>
 
 
-<script id="MORAO_CREAR_ONLY_JS">
-(function(){
-  const crear=document.getElementById('crear');
-  const foto=document.getElementById('fotografia');
-  const cover=document.getElementById('moraoCrearPurple');
-  if(!crear||!foto||!cover) return;
-
-  let busy=false;
-  let passed=false;
-
-  function atBottom(){
-    return crear.getBoundingClientRect().bottom <= window.innerHeight + 2;
-  }
-
-  function rearm(){
-    if(window.scrollY < crear.offsetTop + window.innerHeight*.45) passed=false;
-  }
-
-  function handoff(){
-    if(busy||passed) return;
-    busy=true;
-    document.body.classList.add('morao-create-lock');
-    cover.classList.add('on');
-
-    /* Purple first, then the invisible jump to FOTO. */
-    setTimeout(function(){
-      window.scrollTo(0, foto.offsetTop);
-      requestAnimationFrame(function(){
-        requestAnimationFrame(function(){
-          setTimeout(function(){
-            cover.classList.remove('on');
-            document.body.classList.remove('morao-create-lock');
-            busy=false;
-            passed=true;
-          },180);
-        });
-      });
-    },300);
-  }
-
-  window.addEventListener('wheel',function(e){
-    rearm();
-    if(busy){
-      e.preventDefault();
-      return;
-    }
-    if(!passed && e.deltaY>0 && atBottom()){
-      e.preventDefault();
-      handoff();
-    }
-  },{passive:false});
-
-  let touchY=0;
-  window.addEventListener('touchstart',function(e){
-    if(e.touches.length) touchY=e.touches[0].clientY;
-  },{passive:true});
-  window.addEventListener('touchmove',function(e){
-    rearm();
-    if(busy){
-      e.preventDefault();
-      return;
-    }
-    if(!passed && e.touches.length && touchY-e.touches[0].clientY>10 && atBottom()){
-      e.preventDefault();
-      handoff();
-    }
-  },{passive:false});
-})();
-</script>
-
-<script>
-(function(){
-  var hero = document.querySelector('header.hero');
-  var zoom = document.getElementById('heroZoom');
-  if(!hero || !zoom) return;
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(reduceMotion) return;
-
-  var MIN_SCALE = 0;
-  var ticking = false;
-
-  function update(){
-    ticking = false;
-    var heroHeight = hero.offsetHeight || 1;
-    /* Based on the hero's own position relative to the viewport (not
-       window.scrollY) so this keeps working no matter what comes before
-       it in the page — progress is 0 while the hero's top hasn't reached
-       the viewport top yet, and 1 once it has scrolled a full hero-height
-       past it. */
-    var rectTop = hero.getBoundingClientRect().top;
-    var progress = -rectTop / heroHeight;
-    if(progress < 0) progress = 0;
-    if(progress > 1) progress = 1;
-    var scale = 1 - progress * (1 - MIN_SCALE);
-    zoom.style.transform = 'scale(' + scale.toFixed(4) + ')';
-    zoom.style.opacity = (1 - progress).toFixed(4);
-  }
-
-  function onScroll(){
-    if(!ticking){
-      ticking = true;
-      requestAnimationFrame(update);
-    }
-  }
-
-  window.addEventListener('scroll', onScroll, {passive:true});
-  window.addEventListener('resize', onScroll);
-  update();
-})();
-</script>
-
-<script>
+<script id="MORAO_HSTAGE_JS">
 (function(){
   var runway = document.querySelector('.intro-runway');
   var heroSecondary = document.querySelector('header.hero.hero-secondary');
-  var video = document.getElementById('introBurnVideo');
-  if(!runway || !heroSecondary || !video) return;
+  var burnVideo = document.getElementById('introBurnVideo');
+  var videoSlot = document.getElementById('hstageVideoSlot');
+  var copyEl = document.getElementById('hstageCopy');
+  var clientsEl = document.getElementById('hstageClients');
+  var track = document.getElementById('hstageTrack');
+  var fotoPanel = document.getElementById('fotografia');
+  var fotoStack = document.getElementById('hstageFotoStack');
+  if(!runway||!heroSecondary||!burnVideo||!videoSlot||!copyEl||!clientsEl||!track||!fotoPanel||!fotoStack) return;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(reduceMotion) return;
 
-  /* Scroll-scrubbed intro: scrolling down steps the video forward frame by
-     frame, scrolling up rewinds it, by driving video.currentTime directly
-     from scroll position. The video should be encoded with a keyframe on
-     every frame (all-intra) so arbitrary seeks stay smooth. Starting well
-     before it ends, fade it out gradually to reveal the scaled hero video
-     sitting right behind it, in the exact same box — the reveal should
-     read as a long, gentle dissolve, not something crammed into the very
-     last moment. The secondary hero is pinned (position:sticky) for as
-     long as the runway is taller than it.
+  /* One long pinned "mega-scene", divided into four sequential phases
+     that all share the same pinned scroll range (position:sticky on
+     header.hero.hero-secondary — no JS ever touches scroll position,
+     for the same reason documented on earlier iterations of this
+     scene: an overflow:hidden + scrollTo() lock is what caused jumpy
+     scrolling before, so this scene never does that).
 
-     The "hold" after the burn finishes (so the revealed video has a
-     moment to breathe before the page keeps moving) is done by simply
-     finishing the scrub-and-fade within the first part of that pinned
-     range (HOLD_RATIO), then clamping — the hero stays stuck for the
-     rest of it with no visual change. That happens for free via
-     position:sticky, with no JS touching scroll position at all. An
-     earlier version used overflow:hidden + a corrective scrollTo() to
-     force a fixed 1.5s pause, which is what caused the page to jump
-     around right after the reveal — this replaces it entirely. */
+     Phase A — burn: the intro-burn video scrubs and fades exactly as
+       before, full-bleed, revealing the looping hero video beneath it.
+     Phase B — settle: the hero video slides/narrows into the right
+       half of the screen, the big three-line copy fades in on the
+       left, and the clients marquee slides up to dock along the
+       bottom edge.
+     Phase C — pan: the whole settled panel (copy + video + clients)
+       slides left as a unit, panning in the foto panel from the
+       right — eased in and out (not linear), like an After Effects
+       ease curve.
+     Phase D — foto reveal: with the foto panel now in view (smaller
+       than full screen), its own photo-stack animation runs, staged
+       per card exactly like the site's other portfolio sections.
+
+     Budgets are in vh so they scale with viewport height; the
+     .intro-runway height in CSS must equal their sum (710vh) plus
+     heroSecondary's own ~100vh. */
+  var BUDGET_A_VH = 2.5;
+  var BUDGET_B_VH = 1.2;
+  var BUDGET_C_VH = 1.2;
+  var BUDGET_D_VH = 2.2;
+
   var FADE_START = 0.35;
   var HOLD_RATIO = 0.3;
   var duration = 0;
   var ticking = false;
 
+  function clamp(v,a,b){ return v < a ? a : (v > b ? b : v); }
+  function ease(t){ return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+
+  burnVideo.addEventListener('loadedmetadata', function(){
+    duration = burnVideo.duration || 0;
+    update();
+  });
+  if(burnVideo.readyState >= 1 && burnVideo.duration){
+    duration = burnVideo.duration;
+  }
+
   function update(){
     ticking = false;
-    if(!duration) return;
-    var stuckRange = Math.max(runway.offsetHeight - heroSecondary.offsetHeight, 1);
-    var scrollRange = Math.max(stuckRange * (1 - HOLD_RATIO), 1);
-    var progress = -runway.getBoundingClientRect().top / scrollRange;
-    if(progress < 0) progress = 0;
-    if(progress > 1) progress = 1;
+    var vh = window.innerHeight;
+    var budgetA = vh * BUDGET_A_VH;
+    var budgetB = vh * BUDGET_B_VH;
+    var budgetC = vh * BUDGET_C_VH;
+    var budgetD = vh * BUDGET_D_VH;
+    var total = budgetA + budgetB + budgetC + budgetD;
 
-    try{ video.currentTime = progress * duration; }catch(e){}
+    var globalPx = clamp(-runway.getBoundingClientRect().top, 0, total);
 
-    var fade = (progress - FADE_START) / (1 - FADE_START);
-    if(fade < 0) fade = 0;
-    if(fade > 1) fade = 1;
-    video.style.opacity = (1 - fade).toFixed(4);
+    /* Phase A: burn scrub + fade */
+    if(duration){
+      var scrubRange = Math.max(budgetA * (1 - HOLD_RATIO), 1);
+      var pA = clamp(globalPx / scrubRange, 0, 1);
+      try{ burnVideo.currentTime = pA * duration; }catch(e){}
+      var fade = clamp((pA - FADE_START) / (1 - FADE_START), 0, 1);
+      burnVideo.style.opacity = (1 - fade).toFixed(4);
+    }
+
+    /* Phase B: settle — video narrows to the right half, copy fades in
+       on the left, clients marquee docks along the bottom */
+    var pB = ease(clamp((globalPx - budgetA) / budgetB, 0, 1));
+    videoSlot.style.left = (pB * 50).toFixed(3) + '%';
+    videoSlot.style.width = (100 - pB * 50).toFixed(3) + '%';
+    copyEl.style.opacity = pB.toFixed(4);
+    copyEl.style.transform = 'translateY(-50%) translateX(' + ((1 - pB) * -24).toFixed(2) + 'px)';
+    clientsEl.style.transform = 'translateY(' + ((1 - pB) * 100).toFixed(3) + '%)';
+
+    /* Phase C: horizontal pan, eased — track is 200% wide (two 100%
+       panels), so -50% of the track's own width equals exactly one
+       panel width (-100vw). */
+    var pC = ease(clamp((globalPx - budgetA - budgetB) / budgetC, 0, 1));
+    track.style.transform = 'translateX(' + (-pC * 50).toFixed(3) + '%)';
+
+    /* Phase D: foto panel's own staged card reveal, sized to the
+       panel's own box (it's no longer full screen) rather than the
+       window — same per-card stagger/easing as the rest of the site's
+       portfolio sections. */
+    var pD = clamp((globalPx - budgetA - budgetB - budgetC) / budgetD, 0, 1);
+    var cards = fotoStack.children;
+    var count = cards.length;
+    var pw = fotoPanel.clientWidth || 1;
+    var ph = fotoPanel.clientHeight || 1;
+    var cardH = ph;
+    var cardW = cardH * 3 / 4;
+    var step = count > 1 ? (pw - cardW) / (count - 1) : 0;
+    for(var i = 0; i < count; i++){
+      var card = cards[i];
+      var start = i === 0 ? 0 : 0.07 + (i - 1) * 0.065;
+      var dur = i === 0 ? 0 : 0.20;
+      var q = i === 0 ? 1 : ease(clamp((pD - start) / dur, 0, 1));
+      var startX = pw * 1.25;
+      var finalX = -pw / 2 + cardW / 2 + i * step;
+      var x = startX + (finalX - startX) * q;
+      card.style.width = cardW + 'px';
+      card.style.height = cardH + 'px';
+      card.style.opacity = q;
+      card.style.left = '50%';
+      card.style.top = '50%';
+      card.style.transform = 'translate3d(calc(-50% + ' + x + 'px), -50%, 0)';
+      card.style.zIndex = String(i + 1);
+    }
   }
 
   function onScroll(){
@@ -4291,14 +4326,6 @@ h1,h2,h3,h4,
       ticking = true;
       requestAnimationFrame(update);
     }
-  }
-
-  video.addEventListener('loadedmetadata', function(){
-    duration = video.duration || 0;
-    update();
-  });
-  if(video.readyState >= 1 && video.duration){
-    duration = video.duration;
   }
 
   window.addEventListener('scroll', onScroll, {passive:true});
