@@ -3511,14 +3511,8 @@ body.morao-create-lock{
 header.hero.hero-secondary{
   position:sticky !important;
   top:0 !important;
-  min-height:56svh !important;
-  padding:64px 0 40px !important;
-}
-@media(max-width:800px){
-  header.hero.hero-secondary{
-    min-height:46svh !important;
-    padding:48px 0 32px !important;
-  }
+  min-height:100svh !important;
+  padding:0 !important;
 }
 .intro-burn-video{
   position:absolute;
@@ -4076,13 +4070,14 @@ body.morao-intro-lock{
   /* Scroll-scrubbed intro: scrolling down steps the video forward frame by
      frame, scrolling up rewinds it, by driving video.currentTime directly
      from scroll position. The video should be encoded with a keyframe on
-     every frame (all-intra) so arbitrary seeks stay smooth. Once the video
-     nears its last (black) frame, fade it out over the remaining scroll to
-     reveal the scaled hero video sitting right behind it, in the exact
-     same box. The secondary hero is pinned (position:sticky) for as long
-     as the runway is taller than it, so the scrubbing range is that
+     every frame (all-intra) so arbitrary seeks stay smooth. Starting well
+     before it ends, fade it out gradually to reveal the scaled hero video
+     sitting right behind it, in the exact same box — the reveal should
+     read as a long, gentle dissolve, not something crammed into the very
+     last moment. The secondary hero is pinned (position:sticky) for as
+     long as the runway is taller than it, so the scrubbing range is that
      leftover space, not the full runway height. */
-  var FADE_START = 0.92;
+  var FADE_START = 0.35;
   var duration = 0;
   var ticking = false;
 
