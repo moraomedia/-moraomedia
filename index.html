@@ -3648,16 +3648,21 @@ header.hero.hero-secondary{
   font-style:normal;
   font-display:swap;
 }
+/* No weight heavier than Regular is used anywhere on the site (see
+   below) — this maps 700 to the Regular file too, purely as a safety
+   net, so any legacy rule elsewhere that still asks for font-weight:700
+   or "bold" can't accidentally trigger a synthetic/faux-bold render. */
 @font-face{
   font-family:'Helvetica Neue';
-  src:url('assets/fonts/HelveticaNeue-Medium.woff2') format('woff2');
+  src:url('assets/fonts/HelveticaNeue-Regular.woff2') format('woff2');
   font-weight:700;
   font-style:normal;
   font-display:swap;
 }
-/* Sitewide typography: Helvetica Neue, lowercase everywhere — Light for
-   body copy, Bold for titles/headings. !important because the rest of
-   the file sets Montserrat and mixed weights/casing all over the place. */
+/* Sitewide typography: Helvetica Neue, lowercase everywhere. Regular is
+   the heaviest weight used anywhere (titles included) — nothing bolder.
+   !important because the rest of the file sets Montserrat and mixed
+   weights/casing/tracking all over the place. */
 *{
   font-family:'Helvetica Neue',Helvetica,Arial,sans-serif !important;
   font-weight:300 !important;
@@ -3670,12 +3675,12 @@ h1,h2,h3,h4,
 .eyebrow,
 .crear-copy,
 .service-label{
-  font-weight:700 !important;
+  font-weight:400 !important;
   letter-spacing:-0.02em !important;
 }
 /* A handful of legacy rules qualify headings with an #id, which beats
    the plain selectors above on specificity — matched here explicitly
-   so the Helvetica/bold/lowercase/tight-tracking treatment actually wins.
+   so the Helvetica/lowercase/tight-tracking treatment actually wins.
    Sizes bumped well up too — the previous clamp() values throughout this
    file were tuned for a much smaller, wide-tracked look. */
 #contact h2,
@@ -3683,34 +3688,34 @@ h1,h2,h3,h4,
 #contact .sectionhead h2,
 #crear .crear-copy{
   font-family:'Helvetica Neue',Helvetica,Arial,sans-serif !important;
-  font-weight:700 !important;
+  font-weight:400 !important;
   text-transform:lowercase !important;
   letter-spacing:-0.02em !important;
 }
 #contact h2,
 #contact .wrap > .reveal:first-child h2,
 #contact .sectionhead h2{
-  font-size:clamp(48px,7vw,120px) !important;
+  font-size:clamp(56px,8vw,140px) !important;
 }
 @media(max-width:480px){
   #contact h2,
   #contact .wrap > .reveal:first-child h2,
   #contact .sectionhead h2{
-    font-size:clamp(28px,9vw,44px) !important;
+    font-size:clamp(32px,10vw,50px) !important;
   }
 }
 #crear .crear-copy{
-  font-size:clamp(48px,9vw,160px) !important;
+  font-size:clamp(56px,10vw,180px) !important;
 }
 .hero-copy{
-  font-size:clamp(15px,1.8vw,22px) !important;
+  font-size:clamp(18px,2.2vw,28px) !important;
   letter-spacing:normal !important;
 }
 #contact .contactcopy{
-  font-size:clamp(16px,1.6vw,22px) !important;
+  font-size:clamp(19px,2vw,28px) !important;
 }
 .btn{
-  font-size:14px !important;
+  font-size:16px !important;
 }
 </style>
 </head>
