@@ -126,6 +126,13 @@ button{font:inherit}
   object-fit:cover;
 }
 header.hero{
+  background:#08070b;
+}
+.hero-zoom{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
   transform-origin:50% 50%;
   will-change:transform,opacity;
 }
@@ -3494,15 +3501,17 @@ body.morao-create-lock{
 </nav>
 
 <header class="hero" id="top">
-  <div class="hero-media" id="heroMedia" aria-hidden="true">
-    <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="assets/foto-01.jpg">
-      <source src="assets/hero-video.mp4" type="video/mp4">
-    </video>
-  </div>
-  <div class="wrap hero-content">
-    <div class="hero-logo reveal"><img src="assets/morao-logo-white.png" alt="Morao Media"></div>
-    <p class="hero-copy reveal">PRODUCCIÓN AUDIOVISUAL PARA EVENTOS, MÚSICA Y PROYECTOS.</p>
-    
+  <div class="hero-zoom" id="heroZoom">
+    <div class="hero-media" id="heroMedia" aria-hidden="true">
+      <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="assets/foto-01.jpg">
+        <source src="assets/hero-video.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="wrap hero-content">
+      <div class="hero-logo reveal"><img src="assets/morao-logo-white.png" alt="Morao Media"></div>
+      <p class="hero-copy reveal">PRODUCCIÓN AUDIOVISUAL PARA EVENTOS, MÚSICA Y PROYECTOS.</p>
+
+    </div>
   </div>
 </header>
 
@@ -3948,11 +3957,12 @@ body.morao-create-lock{
 <script>
 (function(){
   var hero = document.querySelector('header.hero');
-  if(!hero) return;
+  var zoom = document.getElementById('heroZoom');
+  if(!hero || !zoom) return;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(reduceMotion) return;
 
-  var MIN_SCALE = 0.82;
+  var MIN_SCALE = 0;
   var ticking = false;
 
   function update(){
@@ -3962,8 +3972,8 @@ body.morao-create-lock{
     if(progress < 0) progress = 0;
     if(progress > 1) progress = 1;
     var scale = 1 - progress * (1 - MIN_SCALE);
-    hero.style.transform = 'scale(' + scale.toFixed(4) + ')';
-    hero.style.opacity = (1 - progress).toFixed(4);
+    zoom.style.transform = 'scale(' + scale.toFixed(4) + ')';
+    zoom.style.opacity = (1 - progress).toFixed(4);
   }
 
   function onScroll(){
