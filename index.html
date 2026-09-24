@@ -125,6 +125,10 @@ button{font:inherit}
   height:100%;
   object-fit:cover;
 }
+header.hero{
+  transform-origin:50% 50%;
+  will-change:transform,opacity;
+}
 .hero-media:after{
   content:"";
   position:absolute;
@@ -3938,6 +3942,40 @@ body.morao-create-lock{
       handoff();
     }
   },{passive:false});
+})();
+</script>
+
+<script>
+(function(){
+  var hero = document.querySelector('header.hero');
+  if(!hero) return;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduceMotion) return;
+
+  var MIN_SCALE = 0.82;
+  var ticking = false;
+
+  function update(){
+    ticking = false;
+    var heroHeight = hero.offsetHeight || 1;
+    var progress = window.scrollY / heroHeight;
+    if(progress < 0) progress = 0;
+    if(progress > 1) progress = 1;
+    var scale = 1 - progress * (1 - MIN_SCALE);
+    hero.style.transform = 'scale(' + scale.toFixed(4) + ')';
+    hero.style.opacity = (1 - progress).toFixed(4);
+  }
+
+  function onScroll(){
+    if(!ticking){
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  update();
 })();
 </script>
 
