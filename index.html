@@ -3616,10 +3616,10 @@ header.hero.hero-secondary{
 </svg>
 <div class="bg-blob-wrap" aria-hidden="true">
   <div class="bg-blob-filter">
-    <div class="bg-blob-mouse" data-depth="38"><div class="bg-blob bg-blob-a"></div></div>
-    <div class="bg-blob-mouse" data-depth="-30"><div class="bg-blob bg-blob-b"></div></div>
-    <div class="bg-blob-mouse" data-depth="24"><div class="bg-blob bg-blob-c"></div></div>
-    <div class="bg-blob-mouse" data-depth="-46"><div class="bg-blob bg-blob-d"></div></div>
+    <div class="bg-blob-mouse" data-depth="150"><div class="bg-blob bg-blob-a"></div></div>
+    <div class="bg-blob-mouse" data-depth="-120"><div class="bg-blob bg-blob-b"></div></div>
+    <div class="bg-blob-mouse" data-depth="95"><div class="bg-blob bg-blob-c"></div></div>
+    <div class="bg-blob-mouse" data-depth="-170"><div class="bg-blob bg-blob-d"></div></div>
   </div>
   <div class="bg-noise"></div>
 </div>
@@ -4216,7 +4216,6 @@ header.hero.hero-secondary{
   if(!blobs.length) return;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(reduceMotion) return;
-  if(window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
 
   /* Background blobs drift toward the mouse position, like the reference
      site — each one moves by its own data-depth (px at full offset,
