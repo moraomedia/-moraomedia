@@ -3528,13 +3528,6 @@ header.hero.hero-secondary{
   header.hero.hero-secondary{position:relative}
   .intro-burn-video{display:none}
 }
-
-/* Scroll lock engaged for a beat right after the burn video fades out,
-   so the scaled video it revealed has a moment to settle in before
-   scrolling continues. See MORAO_INTRO_LOCK_JS. */
-body.morao-intro-lock{
-  overflow:hidden !important;
-}
 </style>
 </head>
 
@@ -4075,16 +4068,27 @@ body.morao-intro-lock{
      sitting right behind it, in the exact same box — the reveal should
      read as a long, gentle dissolve, not something crammed into the very
      last moment. The secondary hero is pinned (position:sticky) for as
-     long as the runway is taller than it, so the scrubbing range is that
-     leftover space, not the full runway height. */
+     long as the runway is taller than it.
+
+     The "hold" after the burn finishes (so the revealed video has a
+     moment to breathe before the page keeps moving) is done by simply
+     finishing the scrub-and-fade within the first part of that pinned
+     range (HOLD_RATIO), then clamping — the hero stays stuck for the
+     rest of it with no visual change. That happens for free via
+     position:sticky, with no JS touching scroll position at all. An
+     earlier version used overflow:hidden + a corrective scrollTo() to
+     force a fixed 1.5s pause, which is what caused the page to jump
+     around right after the reveal — this replaces it entirely. */
   var FADE_START = 0.35;
+  var HOLD_RATIO = 0.3;
   var duration = 0;
   var ticking = false;
 
   function update(){
     ticking = false;
     if(!duration) return;
-    var scrollRange = Math.max(runway.offsetHeight - heroSecondary.offsetHeight, 1);
+    var stuckRange = Math.max(runway.offsetHeight - heroSecondary.offsetHeight, 1);
+    var scrollRange = Math.max(stuckRange * (1 - HOLD_RATIO), 1);
     var progress = -runway.getBoundingClientRect().top / scrollRange;
     if(progress < 0) progress = 0;
     if(progress > 1) progress = 1;
@@ -4115,87 +4119,6 @@ body.morao-intro-lock{
   window.addEventListener('scroll', onScroll, {passive:true});
   window.addEventListener('resize', onScroll);
   update();
-})();
-</script>
-
-<script id="MORAO_INTRO_LOCK_JS">
-(function(){
-  var introVideo = document.getElementById('introBurnVideo');
-  var runway = document.querySelector('.intro-runway');
-  var heroSecondary = document.querySelector('header.hero.hero-secondary');
-  if(!introVideo || !runway || !heroSecondary) return;
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(reduceMotion) return;
-
-  /* Once the burn video has fully faded out (opacity ~0, set by the
-     scroll-scrubbing script above) — revealing the scaled hero video
-     sitting right behind it — snap to the exact scroll position where
-     that happens (correcting any overshoot) and lock scrolling for a
-     beat so that revealed video has a moment to settle before the page
-     keeps moving. The secondary hero is already pinned in place there
-     (position:sticky), so this is a freeze in place, not a jump.
-
-     This is a one-shot intro: it never re-arms, so later scrolling back
-     up into this area and back down can't retrigger the snap+lock (that
-     was causing a spurious jump — the page "sube y baja solo" bug). The
-     snap itself also temporarily forces instant scrolling, since the
-     site's global `scroll-behavior:smooth` would otherwise animate
-     window.scrollTo, which combined with the lock looked like a glitch. */
-  var LOCK_MS = 1500;
-  var locked = false;
-  var passed = false;
-
-  function burnFinished(){
-    var opacity = parseFloat(introVideo.style.opacity);
-    return !isNaN(opacity) && opacity <= 0.02;
-  }
-
-  function revealScrollY(){
-    var scrollRange = Math.max(runway.offsetHeight - heroSecondary.offsetHeight, 1);
-    return runway.offsetTop + scrollRange;
-  }
-
-  function engageLock(){
-    if(locked || passed) return;
-    locked = true;
-    var htmlStyle = document.documentElement.style;
-    var prevScrollBehavior = htmlStyle.scrollBehavior;
-    htmlStyle.scrollBehavior = 'auto';
-    window.scrollTo(0, revealScrollY());
-    htmlStyle.scrollBehavior = prevScrollBehavior;
-    document.body.classList.add('morao-intro-lock');
-    setTimeout(function(){
-      document.body.classList.remove('morao-intro-lock');
-      locked = false;
-      passed = true;
-    }, LOCK_MS);
-  }
-
-  window.addEventListener('wheel', function(e){
-    if(locked){
-      e.preventDefault();
-      return;
-    }
-    if(!passed && e.deltaY > 0 && burnFinished()){
-      e.preventDefault();
-      engageLock();
-    }
-  }, {passive:false});
-
-  var touchY = 0;
-  window.addEventListener('touchstart', function(e){
-    if(e.touches.length) touchY = e.touches[0].clientY;
-  }, {passive:true});
-  window.addEventListener('touchmove', function(e){
-    if(locked){
-      e.preventDefault();
-      return;
-    }
-    if(!passed && e.touches.length && touchY - e.touches[0].clientY > 10 && burnFinished()){
-      e.preventDefault();
-      engageLock();
-    }
-  }, {passive:false});
 })();
 </script>
 
