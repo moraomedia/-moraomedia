@@ -3480,16 +3480,75 @@ body.morao-create-lock{
   .client-logo-strip{height:64px}
 }
 </style>
+
+<style id="morao-v16-bg-loop-intro-secondary">
+/* PERSISTENT BACKGROUND VIDEO — always behind everything; only page content
+   with its own background ever covers it, and it never scrolls away. */
+.bg-loop-video{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:-1;
+  pointer-events:none;
+}
+
+/* INTRO BURN — a short scroll-scrubbed video: scrolling down advances it
+   frame by frame, scrolling up rewinds it, until it fades out (its last
+   frames are black) to reveal the secondary hero section beneath it. */
+.intro-burn{
+  position:relative;
+  height:350vh;
+  background:#08070b;
+}
+.intro-burn-pin{
+  position:sticky;
+  top:0;
+  height:100svh;
+  overflow:hidden;
+  z-index:5;
+  background:#08070b;
+}
+.intro-burn-video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  will-change:opacity;
+}
+@media(prefers-reduced-motion:reduce){
+  .intro-burn{height:auto}
+  .intro-burn-pin{position:relative;height:100svh}
+}
+
+/* SECONDARY HERO — the former hero, now a smaller section further down
+   the page: no logo, same looping video + scroll zoom-out, scaled down. */
+header.hero.hero-secondary{
+  min-height:56svh !important;
+  padding:64px 0 40px !important;
+}
+@media(max-width:800px){
+  header.hero.hero-secondary{
+    min-height:46svh !important;
+    padding:48px 0 32px !important;
+  }
+}
+</style>
 </head>
 
 <body>
+<video class="bg-loop-video" id="bgLoopVideo" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+  <source src="assets/bg-loop.mp4" type="video/mp4">
+</video>
 <div id="moraoCrearPurple" aria-hidden="true"></div>
 <nav class="nav">
   <div class="wrap navin">
     <a class="navlogo" href="#top" aria-label="Morao Media">
       <img src="assets/morao-logo-white.png" alt="Morao Media">
     </a>
-    
+
 <div class="links">
 <a href="#fotografia">FOTO</a>
 <a href="#video">VIDEO</a>
@@ -3500,7 +3559,15 @@ body.morao-create-lock{
   </div>
 </nav>
 
-<header class="hero" id="top">
+<section class="intro-burn" id="top" aria-label="Intro">
+  <div class="intro-burn-pin">
+    <video class="intro-burn-video" id="introBurnVideo" muted playsinline preload="auto" aria-hidden="true">
+      <source src="assets/intro-burn.mp4" type="video/mp4">
+    </video>
+  </div>
+</section>
+
+<header class="hero hero-secondary" id="heroSecondary">
   <div class="hero-zoom" id="heroZoom">
     <div class="hero-media" id="heroMedia" aria-hidden="true">
       <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="assets/foto-01.jpg">
@@ -3508,7 +3575,6 @@ body.morao-create-lock{
       </video>
     </div>
     <div class="wrap hero-content">
-      <div class="hero-logo reveal"><img src="assets/morao-logo-white.png" alt="Morao Media"></div>
       <p class="hero-copy reveal">PRODUCCIÓN AUDIOVISUAL PARA EVENTOS, MÚSICA Y PROYECTOS.</p>
 
     </div>
@@ -3968,7 +4034,13 @@ body.morao-create-lock{
   function update(){
     ticking = false;
     var heroHeight = hero.offsetHeight || 1;
-    var progress = window.scrollY / heroHeight;
+    /* Based on the hero's own position relative to the viewport (not
+       window.scrollY) so this keeps working no matter what comes before
+       it in the page — progress is 0 while the hero's top hasn't reached
+       the viewport top yet, and 1 once it has scrolled a full hero-height
+       past it. */
+    var rectTop = hero.getBoundingClientRect().top;
+    var progress = -rectTop / heroHeight;
     if(progress < 0) progress = 0;
     if(progress > 1) progress = 1;
     var scale = 1 - progress * (1 - MIN_SCALE);
@@ -3981,6 +4053,61 @@ body.morao-create-lock{
       ticking = true;
       requestAnimationFrame(update);
     }
+  }
+
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  update();
+})();
+</script>
+
+<script>
+(function(){
+  var section = document.querySelector('.intro-burn');
+  var video = document.getElementById('introBurnVideo');
+  if(!section || !video) return;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduceMotion) return;
+
+  /* Scroll-scrubbed intro: scrolling down steps the video forward frame by
+     frame, scrolling up rewinds it, by driving video.currentTime directly
+     from scroll position. The video should be encoded with a keyframe on
+     every frame (all-intra) so arbitrary seeks stay smooth. Once the video
+     nears its last (black) frame, fade it out over the remaining scroll so
+     it dissolves cleanly into the secondary hero section beneath it. */
+  var FADE_START = 0.92;
+  var duration = 0;
+  var ticking = false;
+
+  function update(){
+    ticking = false;
+    if(!duration) return;
+    var scrollRange = Math.max(section.offsetHeight - window.innerHeight, 1);
+    var progress = -section.getBoundingClientRect().top / scrollRange;
+    if(progress < 0) progress = 0;
+    if(progress > 1) progress = 1;
+
+    try{ video.currentTime = progress * duration; }catch(e){}
+
+    var fade = (progress - FADE_START) / (1 - FADE_START);
+    if(fade < 0) fade = 0;
+    if(fade > 1) fade = 1;
+    video.style.opacity = (1 - fade).toFixed(4);
+  }
+
+  function onScroll(){
+    if(!ticking){
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  }
+
+  video.addEventListener('loadedmetadata', function(){
+    duration = video.duration || 0;
+    update();
+  });
+  if(video.readyState >= 1 && video.duration){
+    duration = video.duration;
   }
 
   window.addEventListener('scroll', onScroll, {passive:true});
