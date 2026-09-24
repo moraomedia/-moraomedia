@@ -3194,7 +3194,7 @@ document.addEventListener('DOMContentLoaded', function(){
   position:relative !important;
   min-height:100svh !important;
   height:auto !important;
-  background:#000 !important;
+  background:transparent !important;
 }
 #video.video-section .video-sequence{
   position:relative !important;
@@ -3303,7 +3303,7 @@ document.addEventListener('DOMContentLoaded', function(){
   min-height:150vh!important;
   margin:0!important;
   padding:0!important;
-  background:#08070b!important;
+  background:transparent!important;
   overflow:hidden!important;
 }
 #crear .crear-stage{
@@ -3420,7 +3420,7 @@ body.morao-create-lock{
   border:0!important;
   outline:0!important;
   box-shadow:none!important;
-  background:#000!important;
+  background:transparent!important;
 }
 .photography-section .photo-pin{
   overflow:hidden!important;
@@ -3444,9 +3444,10 @@ body.morao-create-lock{
 </style>
 
 <style id="morao-v15-client-marquee">
-/* CLIENTS: looping right-to-left logo marquee, black background */
+/* CLIENTS: looping right-to-left logo marquee, transparent so the
+   background blob shows through */
 .clients-section{
-  background:#08070b !important;
+  background:transparent !important;
 }
 .client-marquee{
   width:100vw !important;
@@ -3603,6 +3604,36 @@ header.hero.hero-secondary{
   .intro-burn-video{display:none}
 }
 </style>
+
+<style id="morao-v19-helvetica-typography">
+/* Sitewide typography: Helvetica Neue, lowercase everywhere — Light for
+   body copy, Bold for titles/headings. !important because the rest of
+   the file sets Montserrat and mixed weights/casing all over the place. */
+*{
+  font-family:'Helvetica Neue',Helvetica,Arial,sans-serif !important;
+  font-weight:300 !important;
+  text-transform:lowercase !important;
+}
+h1,h2,h3,h4,
+.title,
+.sectionhead,
+.eyebrow,
+.crear-copy,
+.service-label{
+  font-weight:700 !important;
+}
+/* A handful of legacy rules qualify headings with an #id, which beats
+   the plain selectors above on specificity — matched here explicitly
+   so the Helvetica/bold/lowercase treatment actually wins. */
+#contact h2,
+#contact .wrap > .reveal:first-child h2,
+#contact .sectionhead h2,
+#crear .crear-copy{
+  font-family:'Helvetica Neue',Helvetica,Arial,sans-serif !important;
+  font-weight:700 !important;
+  text-transform:lowercase !important;
+}
+</style>
 </head>
 
 <body>
@@ -3616,10 +3647,10 @@ header.hero.hero-secondary{
 </svg>
 <div class="bg-blob-wrap" aria-hidden="true">
   <div class="bg-blob-filter">
-    <div class="bg-blob-mouse" data-depth="150"><div class="bg-blob bg-blob-a"></div></div>
-    <div class="bg-blob-mouse" data-depth="-120"><div class="bg-blob bg-blob-b"></div></div>
-    <div class="bg-blob-mouse" data-depth="95"><div class="bg-blob bg-blob-c"></div></div>
-    <div class="bg-blob-mouse" data-depth="-170"><div class="bg-blob bg-blob-d"></div></div>
+    <div class="bg-blob-mouse" data-depth="210"><div class="bg-blob bg-blob-a"></div></div>
+    <div class="bg-blob-mouse" data-depth="-170"><div class="bg-blob bg-blob-b"></div></div>
+    <div class="bg-blob-mouse" data-depth="180"><div class="bg-blob bg-blob-c"></div></div>
+    <div class="bg-blob-mouse" data-depth="-230"><div class="bg-blob bg-blob-d"></div></div>
   </div>
   <div class="bg-noise"></div>
 </div>
@@ -3633,9 +3664,7 @@ header.hero.hero-secondary{
 <div class="links">
 <a href="#fotografia">FOTO</a>
 <a href="#video">VIDEO</a>
-<a href="#social">SOCIAL</a>
-<a href="#about">MORAO</a>
-<a href="#contact">CONTACTO</a>
+<a href="#social">SOCIAL</a><a href="#contact">CONTACTO</a>
 </div>
   </div>
 </nav>
@@ -3695,7 +3724,6 @@ header.hero.hero-secondary{
 <section id="fotografia" class="portfolio-section photography-section">
   <div class="photo-scroll">
     <div class="photo-pin">
-      <div class="photo-title-fixed">FOTO</div>
       <div class="photo-stack" id="photoStack">
         <div class="photo-card photo-1"><img src="assets/foto-01.jpg" alt="Fotografía 1">
 
@@ -3729,7 +3757,6 @@ header.hero.hero-secondary{
 <section id="video" class="portfolio-section video-section">
   <div class="video-sequence" id="videoSequence">
     <div class="media-pin">
-      <div class="media-title-fixed">VIDEO</div>
       <div class="video-grid">
         <div class="video-card"><video src="assets/video-01.mp4" muted loop playsinline preload="metadata"></video></div>
         <div class="video-card"><video src="assets/video-02.mp4" muted loop playsinline preload="metadata"></video></div>
@@ -3742,25 +3769,11 @@ header.hero.hero-secondary{
 <section id="social" class="portfolio-section social-section">
   <div class="social-sequence" id="socialSequence">
     <div class="media-pin">
-      <div class="media-title-fixed">SOCIAL</div>
       <div class="social-composition">
         <div class="social-card social-1"></div>
         <div class="social-card social-2"></div>
         <div class="social-card social-3"></div>
       </div>
-    </div>
-  </div>
-</section>
-
-<section id="about">
-  <div class="wrap about">
-    <div class="aboutcopy">
-      <div class="sectionhead reveal">
-        <h2 class="title">MORAO</h2>
-      </div>
-      <p class="reveal">Morao nace de dos amigos apasionados por contar historias y de la certeza de que una buena narrativa puede transformar la forma en que una marca, un artista o un proyecto conecta con las personas.</p>
-      <p class="reveal">Somos una empresa creativa que convierte ideas en experiencias audiovisuales con identidad, intención y emoción. Nos mueve encontrar la historia detrás de cada proyecto y darle una forma que no solo se vea, sino que permanezca.</p>
-      <p class="reveal">Creamos desde la pasión, pensamos desde la estrategia y producimos para que cada imagen tenga algo que decir.</p>
     </div>
   </div>
 </section>
