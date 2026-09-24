@@ -4133,7 +4133,14 @@ body.morao-intro-lock{
      that happens (correcting any overshoot) and lock scrolling for a
      beat so that revealed video has a moment to settle before the page
      keeps moving. The secondary hero is already pinned in place there
-     (position:sticky), so this is a freeze in place, not a jump. */
+     (position:sticky), so this is a freeze in place, not a jump.
+
+     This is a one-shot intro: it never re-arms, so later scrolling back
+     up into this area and back down can't retrigger the snap+lock (that
+     was causing a spurious jump — the page "sube y baja solo" bug). The
+     snap itself also temporarily forces instant scrolling, since the
+     site's global `scroll-behavior:smooth` would otherwise animate
+     window.scrollTo, which combined with the lock looked like a glitch. */
   var LOCK_MS = 1500;
   var locked = false;
   var passed = false;
@@ -4148,14 +4155,14 @@ body.morao-intro-lock{
     return runway.offsetTop + scrollRange;
   }
 
-  function rearm(){
-    if(window.scrollY < revealScrollY() - window.innerHeight * 0.4) passed = false;
-  }
-
   function engageLock(){
     if(locked || passed) return;
     locked = true;
+    var htmlStyle = document.documentElement.style;
+    var prevScrollBehavior = htmlStyle.scrollBehavior;
+    htmlStyle.scrollBehavior = 'auto';
     window.scrollTo(0, revealScrollY());
+    htmlStyle.scrollBehavior = prevScrollBehavior;
     document.body.classList.add('morao-intro-lock');
     setTimeout(function(){
       document.body.classList.remove('morao-intro-lock');
@@ -4165,7 +4172,6 @@ body.morao-intro-lock{
   }
 
   window.addEventListener('wheel', function(e){
-    rearm();
     if(locked){
       e.preventDefault();
       return;
@@ -4181,7 +4187,6 @@ body.morao-intro-lock{
     if(e.touches.length) touchY = e.touches[0].clientY;
   }, {passive:true});
   window.addEventListener('touchmove', function(e){
-    rearm();
     if(locked){
       e.preventDefault();
       return;
