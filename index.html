@@ -3430,6 +3430,46 @@ body.morao-create-lock{
   object-position:center!important;
 }
 </style>
+
+<style id="morao-v15-client-marquee">
+/* CLIENTS: looping right-to-left logo marquee, black background */
+.clients-section{
+  background:#08070b !important;
+}
+.client-marquee{
+  width:100% !important;
+  max-width:none !important;
+  height:auto !important;
+  overflow:hidden !important;
+  border:0 !important;
+  background:none !important;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+}
+.client-marquee-track{
+  display:flex;
+  align-items:center;
+  width:max-content;
+  animation:client-marquee-scroll 28s linear infinite;
+}
+@media(prefers-reduced-motion:reduce){
+  .client-marquee-track{animation:none}
+}
+.client-logo-strip{
+  height:48px;
+  width:auto;
+  flex-shrink:0;
+  margin-right:64px;
+  display:block;
+}
+@keyframes client-marquee-scroll{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}
+@media(max-width:800px){
+  .client-logo-strip{height:36px;margin-right:40px}
+}
+</style>
 </head>
 
 <body>
@@ -3466,10 +3506,12 @@ body.morao-create-lock{
 <main>
 <section class="clients-section">
   <div class="wrap">
-    <div class="client-strip reveal" aria-label="Espacio reservado para logos de clientes">
-      LOGOS DE CLIENTES / PNG HORIZONTAL
+    <div class="client-marquee reveal" aria-label="Logos de clientes">
+      <div class="client-marquee-track">
+        <img class="client-logo-strip" src="assets/clientes.png" alt="Logos de clientes">
+        <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+      </div>
     </div>
-    <div class="client-strip-note reveal">Reemplazar por una sola imagen PNG horizontal</div>
   </div>
 </section>
 
