@@ -3594,6 +3594,7 @@ header.hero.hero-secondary{
   min-height:100svh !important;
   padding:0 !important;
   overflow:hidden;
+  background:transparent !important;
 }
 .hstage-pin{
   position:absolute;
@@ -3612,7 +3613,7 @@ header.hero.hero-secondary{
   height:100%;
   flex-shrink:0;
   overflow:hidden;
-  background:#08070b;
+  background:transparent;
 }
 .hstage-video-slot{
   position:absolute;
@@ -3621,7 +3622,7 @@ header.hero.hero-secondary{
   width:100%;
   height:100%;
   overflow:hidden;
-  background:#08070b;
+  background:transparent;
   z-index:1;
   will-change:left,width;
 }
@@ -3639,7 +3640,7 @@ header.hero.hero-secondary{
   position:absolute;
   top:50%;
   left:6vw;
-  max-width:44vw;
+  max-width:60vw;
   transform:translateY(-50%) translateX(-24px);
   z-index:3;
   opacity:0;
@@ -3650,7 +3651,8 @@ header.hero.hero-secondary{
   text-align:left;
   color:#fff;
   line-height:0.94;
-  font-size:clamp(22px,3vw,60px);
+  /* ~400% larger than the previous clamp(22px,3vw,60px) pass */
+  font-size:clamp(110px,15vw,300px);
   white-space:nowrap;
 }
 .hstage-clients{
@@ -3659,8 +3661,8 @@ header.hero.hero-secondary{
   right:0;
   bottom:0;
   height:130px;
-  z-index:4;
-  background:#08070b;
+  z-index:10;
+  background:transparent;
   display:flex;
   align-items:center;
   transform:translateY(100%);
@@ -3670,7 +3672,16 @@ header.hero.hero-secondary{
   position:relative !important;
 }
 .hstage-panel-foto{
-  background:#08070b;
+  background:transparent;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.hstage-foto-frame{
+  position:relative;
+  width:34vw;
+  height:44vh;
+  overflow:hidden;
 }
 .hstage-foto-stack{
   position:relative;
@@ -3699,7 +3710,9 @@ header.hero.hero-secondary{
 }
 @media(max-width:800px){
   .hstage-copy{max-width:80vw;left:6vw}
+  .hstage-copy-text{font-size:clamp(52px,13vw,110px)}
   .hstage-clients{height:90px}
+  .hstage-foto-frame{width:60vw;height:34vh}
 }
 </style>
 
@@ -3857,7 +3870,7 @@ h1,h2,h3,h4,
 
         <div class="hstage-panel hstage-panel-hero" id="hstagePanelHero">
           <div class="hstage-video-slot" id="hstageVideoSlot" aria-hidden="true">
-            <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="assets/foto-01.jpg">
+            <video class="hero-video" id="heroVideoEl" autoplay muted loop playsinline preload="auto" poster="assets/foto-01.jpg">
               <source src="assets/hero-video.mp4" type="video/mp4">
             </video>
             <video class="intro-burn-video" id="introBurnVideo" muted playsinline preload="auto" aria-hidden="true">
@@ -3865,41 +3878,47 @@ h1,h2,h3,h4,
             </video>
           </div>
           <div class="hstage-copy" id="hstageCopy">
-            <p class="hstage-copy-text">producción<br>audiovisual para<br>eventos, música y proyectos.</p>
-          </div>
-          <div class="hstage-clients" id="hstageClients">
-            <div class="client-marquee" aria-label="Logos de clientes">
-              <div class="client-marquee-track">
-                <img class="client-logo-strip" src="assets/clientes.png" alt="Logos de clientes">
-                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-                <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
-              </div>
-            </div>
+            <p class="hstage-copy-text">producción<br>audiovisual para<br>eventos, música<br>y proyectos.</p>
           </div>
         </div>
 
         <div class="hstage-panel hstage-panel-foto" id="fotografia">
-          <div class="hstage-foto-stack" id="hstageFotoStack">
-            <div class="hstage-foto-card"><img src="assets/foto-01.jpg" alt="Fotografía 1"></div>
-            <div class="hstage-foto-card"><img src="assets/foto-02.jpg" alt="Fotografía 2"></div>
-            <div class="hstage-foto-card"><img src="assets/foto-03.jpg" alt="Fotografía 3"></div>
-            <div class="hstage-foto-card"><img src="assets/foto-04.jpg" alt="Fotografía 4"></div>
-            <div class="hstage-foto-card"><img src="assets/foto-05.jpg" alt="Fotografía 5"></div>
-            <div class="hstage-foto-card"><img src="assets/foto-06.jpg" alt="Fotografía 6"></div>
-            <div class="hstage-foto-card"><img src="assets/foto-07.jpg" alt="Fotografía 7"></div>
-            <div class="hstage-foto-card"><img src="assets/foto-08.jpg" alt="Fotografía 8"></div>
+          <div class="hstage-foto-frame" id="hstageFotoFrame">
+            <div class="hstage-foto-stack" id="hstageFotoStack">
+              <div class="hstage-foto-card"><img src="assets/foto-01.jpg" alt="Fotografía 1"></div>
+              <div class="hstage-foto-card"><img src="assets/foto-02.jpg" alt="Fotografía 2"></div>
+              <div class="hstage-foto-card"><img src="assets/foto-03.jpg" alt="Fotografía 3"></div>
+              <div class="hstage-foto-card"><img src="assets/foto-04.jpg" alt="Fotografía 4"></div>
+              <div class="hstage-foto-card"><img src="assets/foto-05.jpg" alt="Fotografía 5"></div>
+              <div class="hstage-foto-card"><img src="assets/foto-06.jpg" alt="Fotografía 6"></div>
+              <div class="hstage-foto-card"><img src="assets/foto-07.jpg" alt="Fotografía 7"></div>
+              <div class="hstage-foto-card"><img src="assets/foto-08.jpg" alt="Fotografía 8"></div>
+            </div>
           </div>
         </div>
 
+      </div>
+
+      <!-- Outside the panning track (a direct sibling of it) so it stays
+           fixed on screen through phases B, C and D instead of exiting
+           left with the hero panel. -->
+      <div class="hstage-clients" id="hstageClients">
+        <div class="client-marquee" aria-label="Logos de clientes">
+          <div class="client-marquee-track">
+            <img class="client-logo-strip" src="assets/clientes.png" alt="Logos de clientes">
+            <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+            <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+            <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+            <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+            <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+            <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+            <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+            <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+            <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+            <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+            <img class="client-logo-strip" src="assets/clientes.png" alt="" aria-hidden="true">
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -4205,11 +4224,22 @@ h1,h2,h3,h4,
   var copyEl = document.getElementById('hstageCopy');
   var clientsEl = document.getElementById('hstageClients');
   var track = document.getElementById('hstageTrack');
-  var fotoPanel = document.getElementById('fotografia');
+  var fotoFrame = document.getElementById('hstageFotoFrame');
   var fotoStack = document.getElementById('hstageFotoStack');
-  if(!runway||!heroSecondary||!burnVideo||!videoSlot||!copyEl||!clientsEl||!track||!fotoPanel||!fotoStack) return;
+  var heroVideoEl = document.getElementById('heroVideoEl');
+  if(!runway||!heroSecondary||!burnVideo||!videoSlot||!copyEl||!clientsEl||!track||!fotoFrame||!fotoStack) return;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(reduceMotion) return;
+
+  /* Force-play the looping hero video. The autoplay attribute alone can
+     silently fail to kick in once a video is several layers deep inside
+     sticky/absolutely-positioned wrappers — same defensive pattern the
+     video-section already uses elsewhere on this page. */
+  if(heroVideoEl){
+    heroVideoEl.muted = true;
+    heroVideoEl.playsInline = true;
+    heroVideoEl.play().catch(function(){});
+  }
 
   /* One long pinned "mega-scene", divided into four sequential phases
      that all share the same pinned scroll range (position:sticky on
@@ -4298,8 +4328,8 @@ h1,h2,h3,h4,
     var pD = clamp((globalPx - budgetA - budgetB - budgetC) / budgetD, 0, 1);
     var cards = fotoStack.children;
     var count = cards.length;
-    var pw = fotoPanel.clientWidth || 1;
-    var ph = fotoPanel.clientHeight || 1;
+    var pw = fotoFrame.clientWidth || 1;
+    var ph = fotoFrame.clientHeight || 1;
     var cardH = ph;
     var cardW = cardH * 3 / 4;
     var step = count > 1 ? (pw - cardW) / (count - 1) : 0;
