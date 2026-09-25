@@ -3651,10 +3651,14 @@ header.hero.hero-secondary{
 }
 .hstage-copy{
   position:absolute;
+  /* Centering on 50% of the full viewport height reads as misaligned
+     against the clients bar docked along the bottom edge — lifting it
+     by half the bar's height centers it against the space actually
+     left above that bar instead. */
   top:50%;
   left:6vw;
   max-width:44vw;
-  transform:translateY(-50%) translateX(-24px);
+  transform:translateY(calc(-50% - 65px)) translateX(-24px);
   z-index:3;
   opacity:0;
   will-change:opacity,transform,filter;
@@ -3663,12 +3667,13 @@ header.hero.hero-secondary{
   margin:0;
   text-align:left;
   color:#fff;
-  line-height:0.94;
+  line-height:0.7 !important;
+  letter-spacing:-0.07em !important;
   /* Sized to the widest line ("eventos, música") against the module's
      available width (left edge of the video slot at its settled 50%
      position minus the copy's own left offset) — both scale in vw, so
      this ratio holds at every viewport without a breakpoint. */
-  font-size:clamp(20px,5.6vw,128px);
+  font-size:clamp(22px,6.6vw,150px);
   white-space:nowrap;
   text-shadow:0 12px 48px rgba(0,0,0,0.35);
 }
@@ -3685,7 +3690,6 @@ header.hero.hero-secondary{
   transform:translateY(100%);
   opacity:0;
   will-change:transform,opacity;
-  box-shadow:0 -40px 70px -30px rgba(0,0,0,0.35);
 }
 .hstage-clients .client-marquee{
   position:relative !important;
@@ -3699,8 +3703,8 @@ header.hero.hero-secondary{
 }
 .hstage-foto-frame{
   position:relative;
-  width:56vw;
-  height:66vh;
+  width:74vw;
+  height:84vh;
   overflow:hidden;
   box-shadow:0 70px 140px -40px rgba(0,0,0,0.55);
   will-change:transform;
@@ -3729,13 +3733,14 @@ header.hero.hero-secondary{
   .intro-burn-video{display:none}
   .hstage-track{transform:none !important}
   .hstage-video-slot{left:50% !important;width:50% !important}
-  .hstage-copy{opacity:1 !important;transform:translateY(-50%) !important;filter:none !important}
+  .hstage-copy{opacity:1 !important;transform:translateY(calc(-50% - 65px)) !important;filter:none !important}
   .hstage-clients{transform:translateY(0) !important;opacity:1 !important}
-  .hstage-pin{opacity:1 !important}
+  .hstage-track{opacity:1 !important}
 }
 @media(max-width:800px){
   .hstage-clients{height:90px}
-  .hstage-foto-frame{width:80vw;height:56vh}
+  .hstage-foto-frame{width:92vw;height:72vh}
+  .hstage-copy{transform:translateY(calc(-50% - 45px)) translateX(-24px)}
 }
 </style>
 
@@ -4310,6 +4315,7 @@ h1,h2,h3,h4,
 
   function clamp(v,a,b){ return v < a ? a : (v > b ? b : v); }
   function ease(t){ return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+  function isMobile(){ return window.matchMedia('(max-width:800px)').matches; }
 
   burnVideo.addEventListener('loadedmetadata', function(){
     duration = burnVideo.duration || 0;
@@ -4322,6 +4328,7 @@ h1,h2,h3,h4,
   function update(){
     ticking = false;
     var vh = window.innerHeight;
+    var copyLift = isMobile() ? 45 : 65;
     var budgetA = vh * BUDGET_A_VH;
     var budgetB = vh * BUDGET_B_VH;
     var budgetC = vh * BUDGET_C_VH;
@@ -4344,17 +4351,21 @@ h1,h2,h3,h4,
       }
     }
 
-    /* Phase B: settle — video narrows to the right half (picking up a
-       shadow and a slight rotateY tilt so it settles like a floating
-       card rather than a flat panel), copy fades/blurs/scales in on
-       the left, clients marquee slides up and fades in together. */
+    /* Phase B: settle — video narrows to the right half, picking up a
+       shadow and a brief rotateY swing that starts and ends flat (0deg
+       at pB=0 and pB=1) so the video reads correctly oriented both at
+       rest during Phase A and once fully settled — only the transition
+       between those two flat states swings through the tilt. Copy
+       fades/blurs/scales in on the left; clients marquee slides up and
+       fades in together. */
     var pB = ease(clamp((globalPx - budgetA) / budgetB, 0, 1));
     videoSlot.style.left = (pB * 50).toFixed(3) + '%';
     videoSlot.style.width = (100 - pB * 50).toFixed(3) + '%';
-    videoSlot.style.transform = 'perspective(1400px) rotateY(' + ((1 - pB) * -5).toFixed(2) + 'deg)';
+    var settleTilt = Math.sin(pB * Math.PI) * -5;
+    videoSlot.style.transform = 'perspective(1400px) rotateY(' + settleTilt.toFixed(2) + 'deg)';
     videoSlot.style.boxShadow = '0 60px 120px -40px rgba(0,0,0,' + (0.45 * pB).toFixed(3) + ')';
     copyEl.style.opacity = pB.toFixed(4);
-    copyEl.style.transform = 'translateY(-50%) translateX(' + ((1 - pB) * -24).toFixed(2) + 'px) scale(' + (0.92 + 0.08 * pB).toFixed(4) + ')';
+    copyEl.style.transform = 'translateY(calc(-50% - ' + copyLift + 'px)) translateX(' + ((1 - pB) * -24).toFixed(2) + 'px) scale(' + (0.92 + 0.08 * pB).toFixed(4) + ')';
     copyEl.style.filter = 'blur(' + ((1 - pB) * 10).toFixed(2) + 'px)';
     clientsEl.style.transform = 'translateY(' + ((1 - pB) * 100).toFixed(3) + '%)';
     clientsEl.style.opacity = pB.toFixed(4);
@@ -4403,11 +4414,14 @@ h1,h2,h3,h4,
       card.style.zIndex = String(i + 1);
     }
 
-    /* Exit: the whole pinned scene fades out in the last stretch of
-       Phase D, so leaving it for the next section (Galería) reads as a
-       soft cross-fade instead of an abrupt cut once it un-pins. */
+    /* Exit: the track (hero panel + foto panel) fades out in the last
+       stretch of Phase D, so leaving it for the next section (Galería)
+       reads as a soft cross-fade instead of an abrupt cut once it
+       un-pins. The clients bar is a sibling of the track, not inside
+       it, so it's deliberately excluded — it stays fully visible the
+       entire time, with no fade of its own. */
     var pExit = clamp((pD - EXIT_FADE_START) / (1 - EXIT_FADE_START), 0, 1);
-    pin.style.opacity = (1 - pExit).toFixed(4);
+    track.style.opacity = (1 - pExit).toFixed(4);
   }
 
   function onScroll(){
