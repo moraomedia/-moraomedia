@@ -622,7 +622,16 @@ body{font-family:Montserrat,Arial,sans-serif;font-weight:400}
 
 /* V6 — mobile-safe layout and animations */
 @media (max-width: 800px){
-  html,body{width:100%;overflow-x:hidden}
+  /* overflow-x must stay off the html element here: as soon as html
+     has any non-visible overflow, the UA stops propagating body's
+     overflow to the viewport and both html and body become their own
+     separate scroll containers (each forced to overflow-y:auto by the
+     spec's visible/non-visible pairing rule), which silently breaks
+     every position:sticky element on the page below this breakpoint.
+     Keeping overflow-x:hidden on body alone still clips horizontal
+     overflow site-wide, with no nested-scroller side effect. */
+  html{width:100%}
+  body{width:100%;overflow-x:hidden}
   .wrap{width:calc(100% - 32px);max-width:none}
   .nav{padding:12px 0}
   .navin{min-width:0}
@@ -3600,12 +3609,15 @@ header.hero.hero-secondary{
   position:absolute;
   inset:0;
   overflow:hidden;
+  perspective:1600px;
+  will-change:opacity;
 }
 .hstage-track{
   display:flex;
   width:200%;
   height:100%;
   will-change:transform;
+  transform-style:preserve-3d;
 }
 .hstage-panel{
   position:relative;
@@ -3624,9 +3636,10 @@ header.hero.hero-secondary{
   overflow:hidden;
   background:transparent;
   z-index:1;
-  will-change:left,width;
+  will-change:left,width,transform,box-shadow;
+  box-shadow:0 60px 120px -40px rgba(0,0,0,0);
 }
-.hstage-video-slot .hero-video{z-index:1}
+.hstage-video-slot .hero-video{z-index:1;will-change:transform}
 .hstage-video-slot .intro-burn-video{
   position:absolute;
   inset:0;
@@ -3640,20 +3653,24 @@ header.hero.hero-secondary{
   position:absolute;
   top:50%;
   left:6vw;
-  max-width:60vw;
+  max-width:44vw;
   transform:translateY(-50%) translateX(-24px);
   z-index:3;
   opacity:0;
-  will-change:opacity,transform;
+  will-change:opacity,transform,filter;
 }
 .hstage-copy-text{
   margin:0;
   text-align:left;
   color:#fff;
   line-height:0.94;
-  /* ~400% larger than the previous clamp(22px,3vw,60px) pass */
-  font-size:clamp(110px,15vw,300px);
+  /* Sized to the widest line ("eventos, música") against the module's
+     available width (left edge of the video slot at its settled 50%
+     position minus the copy's own left offset) — both scale in vw, so
+     this ratio holds at every viewport without a breakpoint. */
+  font-size:clamp(20px,5.6vw,128px);
   white-space:nowrap;
+  text-shadow:0 12px 48px rgba(0,0,0,0.35);
 }
 .hstage-clients{
   position:absolute;
@@ -3666,7 +3683,9 @@ header.hero.hero-secondary{
   display:flex;
   align-items:center;
   transform:translateY(100%);
-  will-change:transform;
+  opacity:0;
+  will-change:transform,opacity;
+  box-shadow:0 -40px 70px -30px rgba(0,0,0,0.35);
 }
 .hstage-clients .client-marquee{
   position:relative !important;
@@ -3676,12 +3695,15 @@ header.hero.hero-secondary{
   display:flex;
   align-items:center;
   justify-content:center;
+  will-change:opacity;
 }
 .hstage-foto-frame{
   position:relative;
-  width:34vw;
-  height:44vh;
+  width:56vw;
+  height:66vh;
   overflow:hidden;
+  box-shadow:0 70px 140px -40px rgba(0,0,0,0.55);
+  will-change:transform;
 }
 .hstage-foto-stack{
   position:relative;
@@ -3692,6 +3714,8 @@ header.hero.hero-secondary{
   position:absolute;
   overflow:hidden;
   margin:0;
+  box-shadow:0 30px 70px -20px rgba(0,0,0,0.5);
+  will-change:transform,opacity;
 }
 .hstage-foto-card img{
   display:block;
@@ -3705,14 +3729,13 @@ header.hero.hero-secondary{
   .intro-burn-video{display:none}
   .hstage-track{transform:none !important}
   .hstage-video-slot{left:50% !important;width:50% !important}
-  .hstage-copy{opacity:1 !important;transform:translateY(-50%) !important}
-  .hstage-clients{transform:translateY(0) !important}
+  .hstage-copy{opacity:1 !important;transform:translateY(-50%) !important;filter:none !important}
+  .hstage-clients{transform:translateY(0) !important;opacity:1 !important}
+  .hstage-pin{opacity:1 !important}
 }
 @media(max-width:800px){
-  .hstage-copy{max-width:80vw;left:6vw}
-  .hstage-copy-text{font-size:clamp(52px,13vw,110px)}
   .hstage-clients{height:90px}
-  .hstage-foto-frame{width:60vw;height:34vh}
+  .hstage-foto-frame{width:80vw;height:56vh}
 }
 </style>
 
@@ -4219,15 +4242,18 @@ h1,h2,h3,h4,
 (function(){
   var runway = document.querySelector('.intro-runway');
   var heroSecondary = document.querySelector('header.hero.hero-secondary');
+  var pin = document.getElementById('hstagePin');
   var burnVideo = document.getElementById('introBurnVideo');
   var videoSlot = document.getElementById('hstageVideoSlot');
   var copyEl = document.getElementById('hstageCopy');
   var clientsEl = document.getElementById('hstageClients');
   var track = document.getElementById('hstageTrack');
+  var heroPanel = document.getElementById('hstagePanelHero');
+  var fotoPanel = document.getElementById('fotografia');
   var fotoFrame = document.getElementById('hstageFotoFrame');
   var fotoStack = document.getElementById('hstageFotoStack');
   var heroVideoEl = document.getElementById('heroVideoEl');
-  if(!runway||!heroSecondary||!burnVideo||!videoSlot||!copyEl||!clientsEl||!track||!fotoFrame||!fotoStack) return;
+  if(!runway||!heroSecondary||!pin||!burnVideo||!videoSlot||!copyEl||!clientsEl||!track||!heroPanel||!fotoPanel||!fotoFrame||!fotoStack) return;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(reduceMotion) return;
 
@@ -4257,10 +4283,16 @@ h1,h2,h3,h4,
      Phase C — pan: the whole settled panel (copy + video + clients)
        slides left as a unit, panning in the foto panel from the
        right — eased in and out (not linear), like an After Effects
-       ease curve.
+       ease curve. The two panels also cross-fade and pick up a slight
+       rotateY tilt as they pan, like a camera swinging past them
+       rather than a flat slide.
      Phase D — foto reveal: with the foto panel now in view (smaller
        than full screen), its own photo-stack animation runs, staged
-       per card exactly like the site's other portfolio sections.
+       per card exactly like the site's other portfolio sections, each
+       card tilting in from an angle with its own drop shadow for a
+       stacked-deck feel. The whole pinned scene fades out at the very
+       end of this phase so the handoff into the next section (Galería)
+       is a soft cross-fade instead of a hard cut.
 
      Budgets are in vh so they scale with viewport height; the
      .intro-runway height in CSS must equal their sum (710vh) plus
@@ -4272,6 +4304,7 @@ h1,h2,h3,h4,
 
   var FADE_START = 0.35;
   var HOLD_RATIO = 0.3;
+  var EXIT_FADE_START = 0.88;
   var duration = 0;
   var ticking = false;
 
@@ -4297,35 +4330,54 @@ h1,h2,h3,h4,
 
     var globalPx = clamp(-runway.getBoundingClientRect().top, 0, total);
 
-    /* Phase A: burn scrub + fade */
+    /* Phase A: burn scrub + fade, revealing the looping hero video with
+       a slight zoom-out (1.06 -> 1.0) so the reveal has some depth to
+       it instead of being a flat opacity crossfade. */
     if(duration){
       var scrubRange = Math.max(budgetA * (1 - HOLD_RATIO), 1);
       var pA = clamp(globalPx / scrubRange, 0, 1);
       try{ burnVideo.currentTime = pA * duration; }catch(e){}
       var fade = clamp((pA - FADE_START) / (1 - FADE_START), 0, 1);
       burnVideo.style.opacity = (1 - fade).toFixed(4);
+      if(heroVideoEl){
+        heroVideoEl.style.transform = 'scale(' + (1.06 - 0.06 * fade).toFixed(4) + ')';
+      }
     }
 
-    /* Phase B: settle — video narrows to the right half, copy fades in
-       on the left, clients marquee docks along the bottom */
+    /* Phase B: settle — video narrows to the right half (picking up a
+       shadow and a slight rotateY tilt so it settles like a floating
+       card rather than a flat panel), copy fades/blurs/scales in on
+       the left, clients marquee slides up and fades in together. */
     var pB = ease(clamp((globalPx - budgetA) / budgetB, 0, 1));
     videoSlot.style.left = (pB * 50).toFixed(3) + '%';
     videoSlot.style.width = (100 - pB * 50).toFixed(3) + '%';
+    videoSlot.style.transform = 'perspective(1400px) rotateY(' + ((1 - pB) * -5).toFixed(2) + 'deg)';
+    videoSlot.style.boxShadow = '0 60px 120px -40px rgba(0,0,0,' + (0.45 * pB).toFixed(3) + ')';
     copyEl.style.opacity = pB.toFixed(4);
-    copyEl.style.transform = 'translateY(-50%) translateX(' + ((1 - pB) * -24).toFixed(2) + 'px)';
+    copyEl.style.transform = 'translateY(-50%) translateX(' + ((1 - pB) * -24).toFixed(2) + 'px) scale(' + (0.92 + 0.08 * pB).toFixed(4) + ')';
+    copyEl.style.filter = 'blur(' + ((1 - pB) * 10).toFixed(2) + 'px)';
     clientsEl.style.transform = 'translateY(' + ((1 - pB) * 100).toFixed(3) + '%)';
+    clientsEl.style.opacity = pB.toFixed(4);
 
     /* Phase C: horizontal pan, eased — track is 200% wide (two 100%
        panels), so -50% of the track's own width equals exactly one
-       panel width (-100vw). */
+       panel width (-100vw). A small rotateY tilt on the track and a
+       cross-fade between the two panels sell it as a camera swinging
+       past rather than a flat slide. */
     var pC = ease(clamp((globalPx - budgetA - budgetB) / budgetC, 0, 1));
-    track.style.transform = 'translateX(' + (-pC * 50).toFixed(3) + '%)';
+    var tilt = Math.sin(pC * Math.PI) * -3.5;
+    track.style.transform = 'translateX(' + (-pC * 50).toFixed(3) + '%) perspective(2200px) rotateY(' + tilt.toFixed(3) + 'deg)';
+    heroPanel.style.opacity = clamp(1 - pC * 1.25, 0, 1).toFixed(4);
+    fotoPanel.style.opacity = clamp(pC * 1.25, 0, 1).toFixed(4);
 
     /* Phase D: foto panel's own staged card reveal, sized to the
        panel's own box (it's no longer full screen) rather than the
-       window — same per-card stagger/easing as the rest of the site's
-       portfolio sections. */
+       window. The frame swings in with a brief rotateY, and each card
+       tilts in from an angle (with its own drop shadow from CSS) for a
+       stacked-deck feel instead of a flat slide. */
     var pD = clamp((globalPx - budgetA - budgetB - budgetC) / budgetD, 0, 1);
+    var frameSwing = (1 - clamp(pD / 0.3, 0, 1)) * 8;
+    fotoFrame.style.transform = 'perspective(1600px) rotateY(' + frameSwing.toFixed(2) + 'deg)';
     var cards = fotoStack.children;
     var count = cards.length;
     var pw = fotoFrame.clientWidth || 1;
@@ -4341,14 +4393,21 @@ h1,h2,h3,h4,
       var startX = pw * 1.25;
       var finalX = -pw / 2 + cardW / 2 + i * step;
       var x = startX + (finalX - startX) * q;
+      var cardTilt = (1 - q) * (i % 2 === 0 ? 18 : -18);
       card.style.width = cardW + 'px';
       card.style.height = cardH + 'px';
       card.style.opacity = q;
       card.style.left = '50%';
       card.style.top = '50%';
-      card.style.transform = 'translate3d(calc(-50% + ' + x + 'px), -50%, 0)';
+      card.style.transform = 'translate3d(calc(-50% + ' + x + 'px), -50%, ' + (-40 * (1 - q)).toFixed(1) + 'px) rotateY(' + cardTilt.toFixed(2) + 'deg)';
       card.style.zIndex = String(i + 1);
     }
+
+    /* Exit: the whole pinned scene fades out in the last stretch of
+       Phase D, so leaving it for the next section (Galería) reads as a
+       soft cross-fade instead of an abrupt cut once it un-pins. */
+    var pExit = clamp((pD - EXIT_FADE_START) / (1 - EXIT_FADE_START), 0, 1);
+    pin.style.opacity = (1 - pExit).toFixed(4);
   }
 
   function onScroll(){
